@@ -96,6 +96,12 @@ pnpm install   # runs the `prepare` script (Husky)
 `prettier --check`, test, build. Additional checks (commitlint on PR title, Dependabot)
 are configured separately. Deploy to the Mac Mini remains manual (see README).
 
+## Dependencies
+
+Versions are pinned to exact values in `package.json` (`save-exact=true` in `.npmrc`).
+Do not introduce `^`/`~` ranges; let Dependabot or a deliberate PR change versions.
+The package manager (pnpm) is pinned via the `packageManager` field.
+
 ## Issues and pull requests
 
 - Use the provided issue templates for bugs and feature requests.

@@ -118,6 +118,14 @@ solution later must not require touching route handlers.
 - Never log confidential employer information; treat all content as sensitive.
 - Output that leads to action is preferred over analysis; avoid dashboards/graphs.
 
+## Dependencies
+
+All dependency versions in `package.json` files are pinned to exact versions (no `^`/`~`).
+The package manager is pinned via the `packageManager` field (`pnpm@9.15.0`) and `.npmrc`
+sets `save-exact=true`. Node is constrained by the `engines` field. This keeps installs
+reproducible and CI (`pnpm install --frozen-lockfile`) stable. Upgrades happen via
+Dependabot PRs (#13) or deliberate edits.
+
 ## CI
 
 `.github/workflows/ci.yml`: on push/PR to `main` — install, typecheck (web + api +

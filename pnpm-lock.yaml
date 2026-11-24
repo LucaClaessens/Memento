@@ -15,19 +15,19 @@ importers:
         specifier: 21.2.4
         version: 21.2.4
       '@eslint/js':
-        specifier: ^9.15.0
+        specifier: 9.39.5
         version: 9.39.5
       eslint:
-        specifier: ^9.15.0
+        specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       eslint-config-prettier:
         specifier: 10.1.8
         version: 10.1.8(eslint@9.39.5(jiti@2.7.0))
       eslint-plugin-svelte:
-        specifier: ^2.46.0
+        specifier: 2.46.1
         version: 2.46.1(eslint@9.39.5(jiti@2.7.0))(svelte@5.59.1(@typescript-eslint/types@8.74.0))
       globals:
-        specifier: ^15.12.0
+        specifier: 15.15.0
         version: 15.15.0
       husky:
         specifier: 9.1.7
@@ -42,130 +42,130 @@ importers:
         specifier: 4.2.0
         version: 4.2.0(prettier@3.10.1)(svelte@5.59.1(@typescript-eslint/types@8.74.0))
       typescript-eslint:
-        specifier: ^8.15.0
+        specifier: 8.74.0
         version: 8.74.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
 
   apps/api:
     dependencies:
       '@hono/node-server':
-        specifier: ^1.13.0
+        specifier: 1.19.19
         version: 1.19.19(hono@4.13.21)
       '@memento/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       better-sqlite3:
-        specifier: ^11.0.0
+        specifier: 11.10.0
         version: 11.10.0
       hono:
-        specifier: ^4.6.0
+        specifier: 4.13.21
         version: 4.13.21
       zod:
-        specifier: ^3.23.8
+        specifier: 3.25.76
         version: 3.25.76
     devDependencies:
       '@types/better-sqlite3':
-        specifier: ^7.6.0
+        specifier: 7.6.13
         version: 7.6.13
       '@types/node':
-        specifier: ^22.0.0
+        specifier: 22.20.5
         version: 22.20.5
       eslint:
-        specifier: ^9.0.0
+        specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       tsx:
-        specifier: ^4.19.0
+        specifier: 4.23.15
         version: 4.23.15
       typescript:
-        specifier: ^5.6.0
+        specifier: 5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^2.1.0
+        specifier: 2.1.9
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)
 
   apps/web:
     dependencies:
       '@lucide/svelte':
-        specifier: ^1.79.0
+        specifier: 1.79.0
         version: 1.79.0(svelte@5.59.1(@typescript-eslint/types@8.74.0))
       '@memento/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@sveltejs/kit':
-        specifier: ^2.8.0
+        specifier: 2.70.4
         version: 2.70.4(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.59.1(@typescript-eslint/types@8.74.0))(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)))(svelte@5.59.1(@typescript-eslint/types@8.74.0))(typescript@5.9.3)(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4))
       bits-ui:
-        specifier: ^1.0.0
+        specifier: 1.8.0
         version: 1.8.0(svelte@5.59.1(@typescript-eslint/types@8.74.0))
       cn:
-        specifier: ^0.5.2
+        specifier: 0.5.2
         version: 0.5.2
       svelte:
-        specifier: ^5.0.0
+        specifier: 5.59.1
         version: 5.59.1(@typescript-eslint/types@8.74.0)
       tailwind-variants:
-        specifier: ^3.3.1
+        specifier: 3.3.1
         version: 3.3.1(tailwindcss@4.3.5)
     devDependencies:
       '@fontsource-variable/inter':
-        specifier: ^5.3.0
+        specifier: 5.3.0
         version: 5.3.0
       '@sveltejs/adapter-auto':
-        specifier: ^3.3.0
+        specifier: 3.3.1
         version: 3.3.1(@sveltejs/kit@2.70.4(@sveltejs/vite-plugin-svelte@4.0.4(svelte@5.59.1(@typescript-eslint/types@8.74.0))(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)))(svelte@5.59.1(@typescript-eslint/types@8.74.0))(typescript@5.9.3)(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)))
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^4.0.0
+        specifier: 4.0.4
         version: 4.0.4(svelte@5.59.1(@typescript-eslint/types@8.74.0))(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4))
       '@tailwindcss/vite':
-        specifier: ^4.0.0
+        specifier: 4.3.5
         version: 4.3.5(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4))
       '@types/node':
-        specifier: ^22.0.0
+        specifier: 22.20.5
         version: 22.20.5
       eslint:
-        specifier: ^9.0.0
+        specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       shadcn-svelte:
-        specifier: ^1.8.1
+        specifier: 1.8.1
         version: 1.8.1(svelte@5.59.1(@typescript-eslint/types@8.74.0))
       svelte-check:
-        specifier: ^4.0.0
+        specifier: 4.7.8
         version: 4.7.8(picomatch@4.0.7)(svelte@5.59.1(@typescript-eslint/types@8.74.0))(typescript@5.9.3)
       tailwindcss:
-        specifier: ^4.0.0
+        specifier: 4.3.5
         version: 4.3.5
       tw-animate-css:
-        specifier: ^1.4.0
+        specifier: 1.4.0
         version: 1.4.0
       typescript:
-        specifier: ^5.6.0
+        specifier: 5.9.3
         version: 5.9.3
       vite:
-        specifier: ^5.4.0
+        specifier: 5.4.21
         version: 5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)
       vite-plugin-pwa:
-        specifier: ^0.21.0
+        specifier: 0.21.2
         version: 0.21.2(vite@5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4))(workbox-build@7.4.1)(workbox-window@7.4.1)
       vitest:
-        specifier: ^2.1.0
+        specifier: 2.1.9
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)
 
   packages/shared:
     dependencies:
       zod:
-        specifier: ^3.23.8
+        specifier: 3.25.76
         version: 3.25.76
     devDependencies:
       '@types/node':
-        specifier: ^22.0.0
+        specifier: 22.20.5
         version: 22.20.5
       eslint:
-        specifier: ^9.0.0
+        specifier: 9.39.5
         version: 9.39.5(jiti@2.7.0)
       typescript:
-        specifier: ^5.6.0
+        specifier: 5.9.3
         version: 5.9.3
       vitest:
-        specifier: ^2.1.0
+        specifier: 2.1.9
         version: 2.1.9(@types/node@22.20.5)(lightningcss@1.33.0)(terser@5.51.4)
 
 packages:
