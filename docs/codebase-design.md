@@ -124,6 +124,21 @@ solution later must not require touching route handlers.
 shared), lint, tests (Vitest), build (web). No deploy step; deploy to the Mac Mini is
 manual.
 
+## v1 scope and tickets
+
+v1 = milestones 1 + 2 (capture + people list, then weekly review). Tracked as GitHub issues
+#2–#8, each a tracer-bullet vertical slice with native blocking edges:
+
+1. Text capture end-to-end (no blockers)
+2. Voice capture with transcription (blocked by 1)
+3. Offline capture and background sync (blocked by 1, 2)
+4. People list with manual entry (blocked by 1)
+5. Auto-extraction of people and mentions (blocked by 1, 4)
+6. Reach-out suggestion with draft message (blocked by 4, 5)
+7. Weekly review generation (blocked by 1)
+
+Clinical-facing export and crisis handling are out of scope for now (see Deferred).
+
 ## Deferred (not in v1)
 
 - Early-warning check-ins (milestone 3)
