@@ -12,6 +12,10 @@ Status: idea stage → v1 (milestones 1 + 2). Not yet implemented.
 - `packages/shared` — zod schemas + types shared by both
 - `docs/` — design + ADRs
 
+## Contributing
+
+See `CONTRIBUTING.md` for the development workflow (branching, commits, releases, hooks).
+
 ## Non-goals
 
 Not a productivity/optimization system. No scoring, streaks, goals, or pressure. No

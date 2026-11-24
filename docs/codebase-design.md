@@ -121,8 +121,15 @@ solution later must not require touching route handlers.
 ## CI
 
 `.github/workflows/ci.yml`: on push/PR to `main` — install, typecheck (web + api +
-shared), lint, tests (Vitest), build (web). No deploy step; deploy to the Mac Mini is
-manual.
+shared), lint, `prettier --check`, tests (Vitest), build (web), and (on PRs) a
+commitlint check on the PR title. No deploy step; deploy to the Mac Mini is manual.
+See `CONTRIBUTING.md` for the full dev workflow (branching, commits, releases, hooks).
+
+## Dev workflow
+
+The agreed development workflow (trunk-based, PRs required, squash merge, Conventional
+Commits, release-please, Husky hooks, Prettier) is documented in `CONTRIBUTING.md`.
+This document covers repository structure; `CONTRIBUTING.md` covers process.
 
 ## v1 scope and tickets
 
