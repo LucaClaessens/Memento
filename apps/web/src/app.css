@@ -1,0 +1,67 @@
+/* Minimal Material 3 design tokens for m3-svelte. Refine via material-color-utilities later. */
+:root {
+  --md-sys-color-primary: 103 80 164;
+  --md-sys-color-on-primary: 255 255 255;
+  --md-sys-color-primary-container: 234 221 255;
+  --md-sys-color-on-primary-container: 33 0 93;
+  --md-sys-color-secondary: 98 91 113;
+  --md-sys-color-on-secondary: 255 255 255;
+  --md-sys-color-secondary-container: 232 222 248;
+  --md-sys-color-on-secondary-container: 30 25 43;
+  --md-sys-color-tertiary: 125 82 96;
+  --md-sys-color-on-tertiary: 255 255 255;
+  --md-sys-color-tertiary-container: 255 216 228;
+  --md-sys-color-on-tertiary-container: 49 17 29;
+  --md-sys-color-error: 179 38 30;
+  --md-sys-color-on-error: 255 255 255;
+  --md-sys-color-error-container: 255 218 214;
+  --md-sys-color-on-error-container: 65 0 2;
+  --md-sys-color-background: 255 251 254;
+  --md-sys-color-on-background: 29 27 32;
+  --md-sys-color-surface: 255 251 254;
+  --md-sys-color-on-surface: 29 27 32;
+  --md-sys-color-surface-variant: 231 224 236;
+  --md-sys-color-on-surface-variant: 73 69 79;
+  --md-sys-color-border: 121 116 126;
+  --md-sys-color-outline: 121 116 126;
+  --md-sys-elevation-0: none;
+  --md-sys-elevation-1: 0 1px 3px 1px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-2: 0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --md-sys-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-sys-color-primary: 208 188 255;
+    --md-sys-color-on-primary: 56 30 114;
+    --md-sys-color-primary-container: 79 55 139;
+    --md-sys-color-on-primary-container: 234 221 255;
+    --md-sys-color-secondary: 204 194 220;
+    --md-sys-color-on-secondary: 51 45 65;
+    --md-sys-color-secondary-container: 74 68 88;
+    --md-sys-color-on-secondary-container: 232 222 248;
+    --md-sys-color-tertiary: 239 184 200;
+    --md-sys-color-on-tertiary: 73 37 50;
+    --md-sys-color-tertiary-container: 96 60 73;
+    --md-sys-color-on-tertiary-container: 255 216 228;
+    --md-sys-color-error: 255 180 171;
+    --md-sys-color-on-error: 105 0 5;
+    --md-sys-color-error-container: 147 0 10;
+    --md-sys-color-on-error-container: 255 218 214;
+    --md-sys-color-background: 29 27 32;
+    --md-sys-color-on-background: 231 224 236;
+    --md-sys-color-surface: 29 27 32;
+    --md-sys-color-on-surface: 231 224 236;
+    --md-sys-color-surface-variant: 73 69 79;
+    --md-sys-color-on-surface-variant: 202 196 208;
+    --md-sys-color-border: 147 143 153;
+    --md-sys-color-outline: 147 143 153;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background-color: rgb(var(--md-sys-color-background));
+  color: rgb(var(--md-sys-color-on-background));
+}

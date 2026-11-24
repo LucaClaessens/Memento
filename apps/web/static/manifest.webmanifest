@@ -1,0 +1,9 @@
+{
+  "name": "Memento",
+  "short_name": "Memento",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFBFE",
+  "theme_color": "#6750A4",
+  "icons": []
+}

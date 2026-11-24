@@ -1,0 +1,32 @@
+# .gitignore
+
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+.svelte-kit/
+.output/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# data / local state
+*.db
+*.db-wal
+*.db-shm
+data/
+*.sqlite
+
+# OS / editor
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# test coverage
+coverage/

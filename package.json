@@ -1,0 +1,27 @@
+{
+  "name": "memento",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Personal support tool: remembering people, spotting overload, timeline of patterns, parking ideas.",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @memento/web dev",
+    "dev:api": "pnpm --filter @memento/api dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "eslint": "^9.15.0",
+    "eslint-plugin-svelte": "^2.46.0",
+    "globals": "^15.12.0",
+    "typescript-eslint": "^8.15.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
