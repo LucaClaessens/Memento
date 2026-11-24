@@ -53,22 +53,22 @@ Memento/
 
 ## Tech stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Frontend framework | SvelteKit | Fast solo iteration, PWA-friendly, TS-first |
-| UI design system | shadcn-svelte (Tailwind + Bits UI) | Broad component set, copy-paste ownership, accessible, mobile-ready (ADR-0006) |
-| Frontend language | TypeScript | Shared with backend |
-| Backend framework | Hono | TS-first, minimal, portable (ADR-0002) |
-| Backend language | TypeScript (Node) | Single stack (ADR-0002) |
-| Validation/types | zod in `packages/shared` | One source of truth for API + client |
-| Database | SQLite + SQLCipher | Single file, encrypted at rest (ADR-0003) |
-| Transcription | faster-whisper (backend) | Local (ADR-0001) |
-| LLM (extraction, digest) | Ollama (backend) | Local (ADR-0001) |
-| Offline storage (phone) | IndexedDB | Offline-first capture (ADR-0004) |
-| Network/auth | Tailscale + shared token | No accounts in v1 (ADR-0005) |
-| Lint/format | ESLint + Prettier | Conventional, robust Svelte support |
-| Tests | Vitest | Standard for Vite/SvelteKit; works for Hono |
-| CI | GitHub Actions | Typecheck + tests + build + lint on push/PR to main |
+| Layer                    | Choice                             | Why                                                                            |
+| ------------------------ | ---------------------------------- | ------------------------------------------------------------------------------ |
+| Frontend framework       | SvelteKit                          | Fast solo iteration, PWA-friendly, TS-first                                    |
+| UI design system         | shadcn-svelte (Tailwind + Bits UI) | Broad component set, copy-paste ownership, accessible, mobile-ready (ADR-0006) |
+| Frontend language        | TypeScript                         | Shared with backend                                                            |
+| Backend framework        | Hono                               | TS-first, minimal, portable (ADR-0002)                                         |
+| Backend language         | TypeScript (Node)                  | Single stack (ADR-0002)                                                        |
+| Validation/types         | zod in `packages/shared`           | One source of truth for API + client                                           |
+| Database                 | SQLite + SQLCipher                 | Single file, encrypted at rest (ADR-0003)                                      |
+| Transcription            | faster-whisper (backend)           | Local (ADR-0001)                                                               |
+| LLM (extraction, digest) | Ollama (backend)                   | Local (ADR-0001)                                                               |
+| Offline storage (phone)  | IndexedDB                          | Offline-first capture (ADR-0004)                                               |
+| Network/auth             | Tailscale + shared token           | No accounts in v1 (ADR-0005)                                                   |
+| Lint/format              | ESLint + Prettier                  | Conventional, robust Svelte support                                            |
+| Tests                    | Vitest                             | Standard for Vite/SvelteKit; works for Hono                                    |
+| CI                       | GitHub Actions                     | Typecheck + tests + build + lint on push/PR to main                            |
 
 ## Data flow
 

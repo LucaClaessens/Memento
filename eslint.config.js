@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 import svelte from "eslint-plugin-svelte";
+import prettier from "eslint-config-prettier";
 
 export default [
   js.configs.recommended,
@@ -24,9 +25,14 @@ export default [
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
       ],
       "svelte/valid-compile": "off",
     },
   },
+  prettier,
 ];

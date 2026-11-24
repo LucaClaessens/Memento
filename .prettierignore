@@ -1,0 +1,16 @@
+# Prettier ignores
+node_modules/
+dist/
+build/
+.svelte-kit/
+.output/
+coverage/
+pnpm-lock.yaml
+*.min.js
+
+# Vendored third-party skill assets
+apps/web/.agents/
+apps/web/.svelte-kit/
+
+# Generated files
+apps/web/vite.config.ts.timestamp-*.mjs
