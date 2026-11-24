@@ -1,0 +1,14 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "memento",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        "apps/web/package.json",
+        "apps/api/package.json",
+        "packages/shared/package.json"
+      ]
+    }
+  }
+}
