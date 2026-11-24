@@ -1,7 +1,7 @@
 {
   "name": "memento",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Personal support tool: remembering people, spotting overload, timeline of patterns, parking ideas.",
   "packageManager": "pnpm@9.15.0",
