@@ -56,7 +56,7 @@ Memento/
 | Layer | Choice | Why |
 |---|---|---|
 | Frontend framework | SvelteKit | Fast solo iteration, PWA-friendly, TS-first |
-| UI design system | Material 3 via `m3-svelte` (noph-ui as alternative) | Consistent M3 components; theming via CSS variables |
+| UI design system | shadcn-svelte (Tailwind + Bits UI) | Broad component set, copy-paste ownership, accessible, mobile-ready (ADR-0006) |
 | Frontend language | TypeScript | Shared with backend |
 | Backend framework | Hono | TS-first, minimal, portable (ADR-0002) |
 | Backend language | TypeScript (Node) | Single stack (ADR-0002) |

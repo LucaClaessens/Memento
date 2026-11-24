@@ -26,6 +26,7 @@ export default [
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
       ],
+      "svelte/valid-compile": "off",
     },
   },
 ];

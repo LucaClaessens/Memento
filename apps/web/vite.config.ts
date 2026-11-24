@@ -1,9 +1,11 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     sveltekit(),
     VitePWA({
       registerType: "autoUpdate",
@@ -11,8 +13,8 @@ export default defineConfig({
         name: "Memento",
         short_name: "Memento",
         description: "Personal support tool",
-        theme_color: "#6750A4",
-        background_color: "#FFFBFE",
+        theme_color: "#18181b",
+        background_color: "#fafafa",
         display: "standalone",
         start_url: "/",
         icons: [

@@ -36,6 +36,11 @@ A deterministic condition over Check-ins and Entries that may fire a Nudge. Rule
 first; no ML.
 _Avoid_: model, detector, trigger
 
+**Weekly review**:
+A one-page summary of a week — energy, sleep, social contact, silence tolerance, what
+drained and what restored — generated as a single prompt over that week's entries.
+_Avoid_: report, digest, summary
+
 ### People and contact
 
 **Person**:
@@ -72,25 +77,3 @@ _Avoid_: backlog, list
 **Resurface**:
 Bringing a parked Idea back to attention after its resurface date.
 _Avoid_: remind, notify
-
-### Review and clinical
-
-**Weekly review**:
-A one-page summary of a week — energy, sleep, social contact, silence tolerance, what
-drained and what restored — generated as a single prompt over that week's entries.
-_Avoid_: report, digest, summary
-
-**Bedrijfsarts**:
-The Dutch occupational physician who may receive an exported Weekly review or timeline.
-A recipient, never an actor in the app.
-_Avoid_: doctor, physician (when referring to this role)
-
-**Clinician export** (deferred to v2):
-An export of entries or reviews for a bedrijfsarts, assessment, or coach. Only the
-user decides who sees it.
-_Avoid_: share, report
-
-**Crisis resources** (deferred to v2):
-Local (Dutch) crisis or occupational-health contacts shown when a pattern looks like a
-crisis. Never clinical interpretation, never auto-contact.
-_Avoid_: diagnosis, triage
