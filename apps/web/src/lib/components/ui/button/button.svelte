@@ -1,6 +1,7 @@
 <script lang="ts" module>
   import { type VariantProps, tv } from "tailwind-variants";
   import { cn, type WithElementRef } from "$lib/utils.js";
+  import { resolve } from "$app/paths";
   import type {
     HTMLAnchorAttributes,
     HTMLButtonAttributes,
@@ -70,7 +71,7 @@
     bind:this={ref}
     data-slot="button"
     class={cn(buttonVariants({ variant, size }), className)}
-    href={disabled ? undefined : href}
+    href={disabled ? undefined : resolve(href)}
     aria-disabled={disabled}
     role={disabled ? "link" : undefined}
     tabindex={disabled ? -1 : undefined}
