@@ -32,6 +32,7 @@ export default [
         },
       ],
       "svelte/valid-compile": "off",
+      "svelte/no-navigation-without-resolve": "off",
     },
   },
   prettier,
