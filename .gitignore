@@ -35,3 +35,6 @@ data/
 
 # test coverage
 coverage/
+
+# local MCP config
+.opencode/opencode.json
