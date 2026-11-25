@@ -1,0 +1,11 @@
+{
+  "mcp": {
+    "servers": {
+      "mobbin-mcp": {
+        "type": "remote",
+        "url": "https://api.mobbin.com/mcp",
+        "disabled": false
+      }
+    }
+  }
+}

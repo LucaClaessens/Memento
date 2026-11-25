@@ -16,6 +16,11 @@ A raw capture — voice or text — stored exactly as captured, with no manual t
 structuring at capture time.
 _Avoid_: note, memo, log entry, record
 
+_UI wording_: user-facing copy says "Thought" / "Thoughts" for an Entry (e.g. the
+"Recent thoughts" screen). Domain terms and code identifiers stay "Entry"
+(`Entry`, `entries` table, `/entries` API). "Thought" is presentation only and is not
+a separate concept.
+
 **Capture**:
 The act of recording an Entry: one tap, speak 10–30 seconds, done; text input as
 fallback.
