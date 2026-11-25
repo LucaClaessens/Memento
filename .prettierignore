@@ -14,3 +14,6 @@ apps/web/.svelte-kit/
 
 # Generated files
 apps/web/vite.config.ts.timestamp-*.mjs
+
+# Agent scratch
+.tmp/
