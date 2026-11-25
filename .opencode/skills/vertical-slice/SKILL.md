@@ -110,15 +110,17 @@ Never use `--no-verify`; fix the hook or CI failure instead.
 
 Done when: all five checks pass and the diff is formatted.
 
-## 9. PR
+## 9. PR — hand off, do not merge
 
 - Title: Conventional Commits (`<type>(<scope>): <subject>`), issue reference in the
   body.
 - Body: what changed, why, and how it was verified (commands plus browser evidence).
-- Squash merge after checks are green; delete the branch.
-- Tick the plan and link the PR.
+- Open the PR, report the verification, and ask the user to review it.
+- Never squash-merge a slice PR yourself. The user merges feature slices after a review
+  pass so the outcome can be refined first. Merge only when the user explicitly says to.
+- After the user merges, tick the plan and link the PR.
 
-Done when: merged to `main` and the plan reflects it.
+Done when: the PR is open with evidence and handed to the user for review.
 
 ## Definition of done
 
@@ -127,11 +129,13 @@ Done when: merged to `main` and the plan reflects it.
       practical).
 - [ ] `pnpm lint`, `typecheck`, `test`, `format:check`, `build` green.
 - [ ] Browser verification captured.
-- [ ] PR merged; `GLOSSARY.md` / ADR / plan updated if a decision or term changed.
+- [ ] PR opened with evidence and handed to the user; merged by them after review.
+- [ ] `GLOSSARY.md` / ADR / plan updated if a decision or term changed.
 
 ## Guardrails
 
 - No direct pushes to `main`.
+- Never run `gh pr merge` on a feature/slice PR. Ask the user; they merge.
 - No scoring, streaks, goals, or dashboards (see the README non-goals).
 - No new runtime dependency without a decision recorded in the plan.
 - No secrets or personal data in logs or test fixtures.

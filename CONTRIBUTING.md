@@ -18,8 +18,9 @@ See `docs/codebase-design.md` for repository structure and `GLOSSARY.md` for dom
 - A PR must be up to date with `main` before merge.
 - Required CI checks must be green before merge: typecheck, lint, `prettier --check`,
   test, build, and the PR-title commitlint check.
-- There are no required human reviewers (solo maintainer); the maintainer self-merges after
-  CI is green.
+- There are no required human reviewers (solo maintainer). Feature slices are reviewed
+  and merged by the maintainer: an agent must open the PR, report verification, and ask
+  before merging. Agents merge only when the maintainer explicitly asks.
 - Merge using **squash merge** only. The PR title becomes the single commit on `main`,
   so the PR title must be a valid Conventional Commits message (see below).
 - Delete the branch after merge (enabled automatically).
