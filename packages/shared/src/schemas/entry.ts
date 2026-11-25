@@ -11,6 +11,24 @@ export const EntrySchema = z.object({
 
 export type Entry = z.infer<typeof EntrySchema>;
 
+export const CreateEntrySchema = z.object({
+  id: z.string().uuid().optional(),
+  rawText: z
+    .string()
+    .max(10_000, "rawText must be at most 10,000 characters")
+    .refine((value) => value.trim().length > 0, "rawText must not be empty"),
+  source: z.enum(["voice", "text"]).default("text"),
+  createdAt: z.string().datetime().optional(),
+});
+
+export type CreateEntry = z.infer<typeof CreateEntrySchema>;
+
+export const EntryListSchema = z.object({
+  entries: z.array(EntrySchema),
+});
+
+export type EntryList = z.infer<typeof EntryListSchema>;
+
 export const PersonSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),

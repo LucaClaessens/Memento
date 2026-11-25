@@ -11,6 +11,5 @@
     "strict": true,
     "moduleResolution": "bundler",
     "types": ["vite/client"]
-  },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"]
+  }
 }

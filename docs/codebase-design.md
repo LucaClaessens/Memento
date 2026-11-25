@@ -61,7 +61,7 @@ Memento/
 | Backend framework        | Hono                               | TS-first, minimal, portable (ADR-0002)                                         |
 | Backend language         | TypeScript (Node)                  | Single stack (ADR-0002)                                                        |
 | Validation/types         | zod in `packages/shared`           | One source of truth for API + client                                           |
-| Database                 | SQLite + SQLCipher                 | Single file, encrypted at rest (ADR-0003)                                      |
+| Database                 | SQLite (SQLCipher pending #31)     | Single file, encrypted at rest (ADR-0003)                                      |
 | Transcription            | faster-whisper (backend)           | Local (ADR-0001)                                                               |
 | LLM (extraction, digest) | Ollama (backend)                   | Local (ADR-0001)                                                               |
 | Offline storage (phone)  | IndexedDB                          | Offline-first capture (ADR-0004)                                               |
@@ -102,9 +102,11 @@ solution later must not require touching route handlers.
 ## Database
 
 - One SQLite file with SQLCipher, on the Mac Mini.
-- Migrations live in `apps/api/src/db/migrations/` and run on startup.
+- Migrations live in `apps/api/src/db/migrations/` as ordered TypeScript modules applied
+  on startup and recorded in `schema_migrations`.
 - Complete delete = delete rows (and, for "delete all data", delete the DB file).
 - Backups = copy the DB file (documented in README).
+- #2 ships plain SQLite; encryption at rest is tracked in #31 (see ADR-0003).
 
 ## Conventions
 

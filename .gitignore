@@ -25,6 +25,7 @@ data/
 
 # agent scratch
 .tmp/
+.openchamber/
 
 # OS / editor
 .DS_Store
