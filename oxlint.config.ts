@@ -27,15 +27,31 @@ export default defineConfig({
       // The API entry point reports startup and shutdown; the preset bans
       // console calls everywhere, including entry points.
       files: ["apps/api/src/index.ts"],
-      rules: { "no-console": "off" },
+      rules: {
+        "no-console": "off",
+        // The model preload deliberately does not block `serve`; awaiting it
+        // top-level would delay the first request instead of warming it.
+        "unicorn/prefer-top-level-await": "off",
+      },
+    },
+    {
+      // shadcn-svelte components expose namespace imports (`import * as Alert`)
+      // for compound components; that is the library's documented API.
+      files: ["apps/web/src/**/*.svelte"],
+      rules: { "import/no-namespace": "off" },
+    },
+    {
+      // The client returns unparsed JSON; each feature validates it with the
+      // shared zod schema at its own boundary. Returning `unknown` is the point.
+      files: ["apps/web/src/lib/api/client.ts"],
+      rules: { "quality/no-unknown-returns": "off" },
     },
   ],
   rules: {
-    // Baseline: rules that fail on the current code. Each is either fixed in a
-    // follow-up commit (and removed from this list) or kept off with a reason.
-    "import/no-namespace": "off",
-    "quality/no-unknown-returns": "off",
-    "unicorn/prefer-top-level-await": "off",
+    // Kept off on purpose. Each entry states why the rule does not fit.
+    //
+    // TypeScript's only way to narrow `unknown` to an error or a DOM class
+    // (`File`) is `instanceof`; the rule cannot be satisfied without casts.
     "@nkzw/no-instanceof": "off",
   },
 });
