@@ -16,11 +16,18 @@ export default defineConfig({
     "**/dist/**",
     "**/coverage/**",
   ],
+  overrides: [
+    {
+      // The API entry point reports startup and shutdown; the preset bans
+      // console calls everywhere, including entry points.
+      files: ["apps/api/src/index.ts"],
+      rules: { "no-console": "off" },
+    },
+  ],
   rules: {
     // Baseline: rules that fail on the current code. Each is either fixed in a
     // follow-up commit (and removed from this list) or kept off with a reason.
     "import/no-namespace": "off",
-    "no-console": "off",
     "quality/no-known-value-widening": "off",
     "quality/no-unsafe-dictionary-type": "off",
     "quality/no-unknown-returns": "off",
