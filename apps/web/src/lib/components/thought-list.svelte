@@ -6,6 +6,7 @@
   import { Skeleton } from "$lib/components/ui/skeleton";
   import ThoughtRow from "./thought-row.svelte";
   import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { pushDirection } from "$lib/thoughts-transition";
 
   interface Props {
     entries: Entry[];
@@ -70,12 +71,9 @@
 
   <ul class="flex flex-col" class:is-open={activeIndex !== -1}>
     {#each entries as entry, index (entry.id)}
-      {@const pushed =
-        activeIndex === -1 || activeIndex === index || thoughtOverlay.closing
-          ? null
-          : index < activeIndex
-            ? "up"
-            : "down"}
+      {@const pushed = thoughtOverlay.closing
+        ? null
+        : pushDirection(index, activeIndex)}
       <li class="border-t border-border first:border-t-0">
         <ThoughtRow
           {entry}

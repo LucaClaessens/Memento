@@ -10,6 +10,7 @@
   } from "$lib/thoughts";
   import ThoughtDetailContent from "$lib/components/thought-detail-content.svelte";
   import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { cardTarget, pushDistances } from "$lib/thoughts-transition";
 
   interface Props {
     entry: Entry;
@@ -21,7 +22,6 @@
 
   let { entry, now, active = false, pushed = null, onclosed }: Props = $props();
 
-  const HEADER = 56;
   const title = $derived(thoughtTitle(entry));
   const summary = $derived(thoughtSummary(entry));
   const dateLabel = $derived(formatThoughtDate(entry.createdAt, now));
@@ -59,11 +59,9 @@
       rect = { top: r.top, left: r.left, width: r.width, height: r.height };
       // Push siblings by the same distance the card's edges travel, so the
       // card and the list move as one surface.
-      thoughtOverlay.pushUp = Math.max(0, r.top - HEADER);
-      thoughtOverlay.pushDown = Math.max(
-        0,
-        window.innerHeight - (r.top + r.height)
-      );
+      const push = pushDistances(r, window.innerHeight);
+      thoughtOverlay.pushUp = push.up;
+      thoughtOverlay.pushDown = push.down;
       card = true;
       void tick().then(() => {
         requestAnimationFrame(() => {
@@ -101,13 +99,14 @@
     onclosed?.();
   }
 
+  const target = $derived(cardTarget(viewport));
   const cardStyle = $derived(
     card && rect
       ? `position: fixed; z-index: 50; top: ${
-          grown ? HEADER : rect.top
-        }px; left: ${grown ? 0 : rect.left}px; width: ${
-          grown ? viewport.width : rect.width
-        }px; height: ${grown ? viewport.height - HEADER : rect.height}px;`
+          grown ? target.top : rect.top
+        }px; left: ${grown ? target.left : rect.left}px; width: ${
+          grown ? target.width : rect.width
+        }px; height: ${grown ? target.height : rect.height}px;`
       : ""
   );
 
