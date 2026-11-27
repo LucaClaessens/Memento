@@ -1,6 +1,7 @@
 import type { Entry } from "@memento/shared";
 import { describe, expect, it, vi } from "vitest";
-import { ApiError, createApiClient, type FetchLike } from "./client";
+import { ApiError, createApiClient } from "./client";
+import type { FetchLike } from "./client";
 import { createEntriesApi } from "./entries";
 
 const entry: Entry = {

@@ -1,4 +1,5 @@
-import { firstLineTitle, type Entry } from "@memento/shared";
+import { firstLineTitle } from "@memento/shared";
+import type { Entry } from "@memento/shared";
 import type { Db } from "./types.js";
 
 export interface NewEntry {

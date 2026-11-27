@@ -1,4 +1,5 @@
-import { firstLineTitle, type Entry } from "@memento/shared";
+import { firstLineTitle } from "@memento/shared";
+import type { Entry } from "@memento/shared";
 
 export interface ThoughtDisplay {
   title: string;

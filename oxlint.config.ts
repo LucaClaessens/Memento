@@ -19,7 +19,6 @@ export default defineConfig({
   rules: {
     // Baseline: rules that fail on the current code. Each is either fixed in a
     // follow-up commit (and removed from this list) or kept off with a reason.
-    "import/consistent-type-specifier-style": "off",
     "import/no-namespace": "off",
     "no-console": "off",
     "no-promise-executor-return": "off",

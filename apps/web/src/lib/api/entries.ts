@@ -1,9 +1,5 @@
-import {
-  EntryListSchema,
-  EntrySchema,
-  type CreateEntry,
-  type Entry,
-} from "@memento/shared";
+import { EntryListSchema, EntrySchema } from "@memento/shared";
+import type { CreateEntry, Entry } from "@memento/shared";
 import type { ApiClient } from "./client";
 
 export function createEntriesApi(client: ApiClient) {
