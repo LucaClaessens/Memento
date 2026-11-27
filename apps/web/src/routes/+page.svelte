@@ -2,6 +2,7 @@
   import { MAX_ENTRY_LENGTH } from "@memento/shared";
   import * as Alert from "$lib/components/ui/alert";
   import { Button } from "$lib/components/ui/button";
+  import CaptureWaveform from "$lib/components/capture-waveform.svelte";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
   import { entries } from "$lib/stores/entries.svelte";
@@ -23,9 +24,7 @@
   let mediaRecorder: MediaRecorder | null = null;
   let chunks: Blob[] = [];
   let audioContext: AudioContext | null = null;
-  let analyser: AnalyserNode | null = null;
-  let dataArray: Uint8Array<ArrayBuffer> | null = $state(null);
-  let waveLevels = $state<number[]>(Array(24).fill(0));
+  let analyser = $state.raw<AnalyserNode | null>(null);
 
   const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
   const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1_000);
@@ -47,10 +46,8 @@
       await audioContext.resume();
       const source = audioContext.createMediaStreamSource(stream);
       analyser = audioContext.createAnalyser();
-      analyser.fftSize = 64;
-      analyser.smoothingTimeConstant = 0.2;
+      analyser.fftSize = 1024;
       source.connect(analyser);
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
 
       mediaRecorder = new MediaRecorder(stream);
       chunks = [];
@@ -62,14 +59,7 @@
       elapsed = 0;
       timer = setInterval(() => {
         elapsed += 1;
-        if (analyser && dataArray) {
-          analyser.getByteFrequencyData(dataArray as Uint8Array<ArrayBuffer>);
-          waveLevels = Array.from({ length: 24 }, (_, i) => {
-            const idx = Math.floor((i / 24) * dataArray!.length);
-            return dataArray![idx] / 255;
-          });
-        }
-      }, 50);
+      }, 1_000);
     } catch {
       entries.submitError = "Microphone access denied.";
     }
@@ -91,7 +81,6 @@
     stopTimer();
     chunks = [];
     elapsed = 0;
-    waveLevels = Array(24).fill(0);
   }
 
   async function acceptRecording(): Promise<void> {
@@ -112,7 +101,6 @@
     recording = false;
     stopTimer();
     elapsed = 0;
-    waveLevels = Array(24).fill(0);
     transcribing = true;
     transcribeController = new AbortController();
     try {
@@ -183,7 +171,7 @@
     {#if entries.submitError}
       <div class="shrink-0 pb-2">
         <Alert.Root variant="destructive">
-          <Alert.Title>Couldn’t save</Alert.Title>
+          <Alert.Title>Couldn’t capture</Alert.Title>
           <Alert.Description>{entries.submitError}</Alert.Description>
         </Alert.Root>
       </div>
@@ -201,21 +189,16 @@
         >
           <MicIcon class="size-5" />
         </button>
-        <div class="flex flex-1 items-center gap-2 px-2">
-          <div class="flex h-7 items-center gap-0.5">
-            {#each waveLevels as level, i (i)}
-              <span
-                class="w-1 rounded-sm bg-destructive"
-                style="height: {Math.max(2, level * 28)}px"
-              ></span>
-            {/each}
+        <div class="flex min-w-0 flex-1 items-center gap-2 px-2">
+          <div class="min-w-0 flex-1">
+            <CaptureWaveform {analyser} />
           </div>
           <span
-            class="ml-auto size-1.5 rounded-full bg-destructive motion-safe:animate-pulse"
+            class="size-1.5 shrink-0 rounded-full bg-destructive motion-safe:animate-pulse"
             aria-hidden="true"
           ></span>
-          <span class="text-xs tabular-nums text-muted-foreground">
-            {Math.floor(elapsed / 10)}s
+          <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
+            {elapsed}s
           </span>
         </div>
         <button
@@ -269,7 +252,7 @@
           {#if nearLimit}
             {text.length.toLocaleString()} / {MAX_ENTRY_LENGTH.toLocaleString()}
           {:else}
-            ⌘↵ to save
+            <span class="hidden md:inline">⌘↵ to save</span>
           {/if}
         </span>
         <Button
