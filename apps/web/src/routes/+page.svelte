@@ -40,6 +40,7 @@
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioContext = new AudioContext();
+      await audioContext.resume();
       const source = audioContext.createMediaStreamSource(stream);
       analyser = audioContext.createAnalyser();
       analyser.fftSize = 64;
@@ -187,7 +188,7 @@
           <MicIcon class="size-5" />
         </button>
         <div class="flex flex-1 items-center gap-2 px-2">
-          <div class="flex items-end gap-0.5 h-7">
+          <div class="flex items-center gap-0.5 h-7">
             {#each waveLevels as level, i (i)}
               <span
                 class="w-1 rounded-sm bg-primary"
