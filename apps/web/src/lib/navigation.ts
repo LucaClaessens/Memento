@@ -1,7 +1,9 @@
 export type TabIcon = "pen" | "notebook";
 
+export type TabHref = "/" | "/thoughts";
+
 export interface NavigationTab {
-  href: string;
+  href: TabHref;
   label: string;
   icon: TabIcon;
 }

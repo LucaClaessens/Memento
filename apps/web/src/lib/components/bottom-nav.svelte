@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import NotebookIcon from "@lucide/svelte/icons/notebook";
   import PenLineIcon from "@lucide/svelte/icons/pen-line";
@@ -84,7 +85,7 @@
       {@const Icon = icons[tab.icon]}
       <a
         bind:this={tabEls[index]}
-        href={tab.href}
+        href={resolve(tab.href)}
         aria-current={active ? "page" : undefined}
         onclick={(event) => handleClick(event, tab.href)}
         class={cn(

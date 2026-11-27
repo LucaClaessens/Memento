@@ -54,7 +54,7 @@
   }
 </script>
 
-<div class="detail-content" class:visible>
+<div class={["detail-content", { visible }]}>
   {#if thoughtDetail.loading || (!thoughtDetail.thought && !thoughtDetail.notFound && !thoughtDetail.loadError)}
     <div class="flex flex-col gap-3" aria-busy="true">
       <span class="sr-only" role="status">Loading thought…</span>
