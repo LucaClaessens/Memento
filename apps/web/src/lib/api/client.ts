@@ -11,6 +11,7 @@ export interface ApiClientOptions {
 export interface ApiClient {
   get(path: string): Promise<unknown>;
   post(path: string, body: unknown): Promise<unknown>;
+  postForm(path: string, body: FormData): Promise<unknown>;
 }
 
 export class ApiError extends Error {
@@ -74,6 +75,12 @@ export function createApiClient({
           "content-type": "application/json",
         },
         body: JSON.stringify(body),
+      }),
+    postForm: (path, body) =>
+      request(path, {
+        method: "POST",
+        headers: { accept: "application/json" },
+        body,
       }),
   };
 }

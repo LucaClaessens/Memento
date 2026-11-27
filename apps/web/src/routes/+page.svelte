@@ -9,6 +9,36 @@
   let text = $state("");
   let textareaRef: HTMLTextAreaElement | null = $state(null);
   let announcement = $state("");
+  let recording = $state(false);
+  let mediaRecorder: MediaRecorder | null = null;
+  let chunks: Blob[] = [];
+
+  async function toggleRecord(): Promise<void> {
+    if (recording) {
+      mediaRecorder?.stop();
+      recording = false;
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      chunks = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      mediaRecorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunks, {
+          type: mediaRecorder?.mimeType ?? "audio/webm",
+        });
+        await entries.captureVoice(blob);
+      };
+      mediaRecorder.start();
+      recording = true;
+    } catch {
+      entries.submitError = "Microphone access denied.";
+    }
+  }
 
   const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
   const canSubmit = $derived(
@@ -85,12 +115,16 @@
     <div
       class="flex shrink-0 items-center gap-2 rounded-2xl border border-border bg-card/70 p-2 md:gap-3"
     >
-      <!-- Reserved 40px record-control slot (filled by #3). -->
-      <div
-        class="size-10 shrink-0"
-        aria-hidden="true"
+      <!-- Record control (#3). -->
+      <button
+        type="button"
+        class="size-10 shrink-0 rounded-full border border-border flex items-center justify-center"
+        aria-label={recording ? "Stop recording" : "Start recording"}
         data-slot="record-control"
-      ></div>
+        onclick={() => void toggleRecord()}
+      >
+        {recording ? "■" : "●"}
+      </button>
       <span class="flex-1 text-center text-xs text-muted-foreground">
         ⌘↵ to save
       </span>

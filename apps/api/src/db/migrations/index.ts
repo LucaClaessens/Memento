@@ -1,13 +1,18 @@
 import type { Db } from "../types.js";
 import { migration as createEntries } from "./001-create-entries.js";
 import { migration as addThreadsAndTitles } from "./002-entries-threads-and-titles.js";
+import { migration as addTranscription } from "./003-entries-transcription.js";
 
 export interface Migration {
   id: string;
   up(db: Db): void;
 }
 
-export const migrations: Migration[] = [createEntries, addThreadsAndTitles];
+export const migrations: Migration[] = [
+  createEntries,
+  addThreadsAndTitles,
+  addTranscription,
+];
 
 /** Applies each migration once, in order, recording it in `schema_migrations`. */
 export function runMigrations(db: Db): void {

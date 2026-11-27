@@ -48,6 +48,8 @@ describe("entries repository", () => {
       titleSource: "first_line",
       synced: true,
       syncedAt: "2026-11-25T10:00:00.000Z",
+      transcriptionStatus: "done",
+      audioPath: null,
     });
     expect(entries.list(10)).toEqual([result.entry]);
     db.close();
@@ -166,6 +168,7 @@ describe("entries repository", () => {
     expect(migrations.map((row) => row.id)).toEqual([
       "001-create-entries",
       "002-entries-threads-and-titles",
+      "003-entries-transcription",
     ]);
     second.close();
   });

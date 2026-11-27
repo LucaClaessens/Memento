@@ -2,6 +2,8 @@ import { z } from "zod";
 
 export const MAX_ENTRY_LENGTH = 10_000;
 
+export const TranscriptionStatusSchema = z.enum(["pending", "done", "failed"]);
+
 export const EntrySchema = z.object({
   id: z.string().uuid(),
   rawText: z.string(),
@@ -13,6 +15,8 @@ export const EntrySchema = z.object({
   titleSource: z.enum(["first_line", "ai"]).nullable().default(null),
   synced: z.boolean().default(false),
   syncedAt: z.string().datetime().nullable().default(null),
+  transcriptionStatus: TranscriptionStatusSchema.default("done"),
+  audioPath: z.string().nullable().default(null),
 });
 
 export type Entry = z.infer<typeof EntrySchema>;
@@ -29,6 +33,7 @@ export const CreateEntrySchema = z.object({
   source: z.enum(["voice", "text"]).default("text"),
   createdAt: z.string().datetime().optional(),
   parentId: z.string().uuid().nullable().optional(),
+  transcriptionStatus: TranscriptionStatusSchema.optional(),
 });
 
 export type CreateEntry = z.infer<typeof CreateEntrySchema>;
