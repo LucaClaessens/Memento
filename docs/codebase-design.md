@@ -108,6 +108,13 @@ used in the codebase: `createEntriesRepository(db)`, `newEntry({ ...overrides })
 See `.opencode/skills/test-design/SKILL.md` for what earns a test and the rules against
 module mocks and source-text assertions.
 
+## UI design language
+
+Memento's visual language, motion/continuity contract, and phone rules are codified in
+`.opencode/skills/memento-ui-guidance/SKILL.md` (with `references/tokens-and-examples.md`).
+State color tokens (`--info`, `--success`, `--warning`) live in `apps/web/src/app.css`.
+A migration of existing screens to these standards is tracked separately.
+
 ## Auth slot
 
 `apps/api/src/middleware/auth.ts` is a single middleware that validates the shared token
