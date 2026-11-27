@@ -5,7 +5,7 @@
   import PenLineIcon from "@lucide/svelte/icons/pen-line";
   import { isTabActive, tabs } from "$lib/navigation";
   import { cn } from "$lib/utils";
-  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { thoughtOverlay } from "$lib/stores/app.svelte";
 
   const icons = { pen: PenLineIcon, notebook: NotebookIcon };
   const pathname = $derived(page.url.pathname);

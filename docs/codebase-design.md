@@ -103,8 +103,10 @@ Trivial folders are covered by their parent's document.
 
 Memento favors deep modules with small interfaces (see `codebase-design` skill vocabulary).
 Dependencies are passed explicitly so tests can hand over small fakes or real in-memory
-instances; the project's own modules run for real. Factories follow the pattern already
-used in the codebase: `createEntriesRepository(db)`, `newEntry({ ...overrides })`.
+instances; the project's own modules run for real. Factories follow the pattern used in
+the codebase: `createEntriesRepository(db)`, `createTranscriptionService({ transcriber })`,
+`createEntriesStore(api)`, and `newEntry({ ...overrides })`. Composition roots
+(`createApp`, `lib/stores/app.svelte.ts`) are the only places that wire real dependencies.
 See `.opencode/skills/test-design/SKILL.md` for what earns a test and the rules against
 module mocks and source-text assertions.
 

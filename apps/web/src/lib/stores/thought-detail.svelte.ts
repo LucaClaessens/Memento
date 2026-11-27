@@ -1,13 +1,16 @@
 import type { Entry } from "@memento/shared";
-import { entriesApi } from "$lib/api";
+import type { EntriesApi } from "$lib/api";
 import { ApiError } from "$lib/api/client";
 import { textEntry } from "$lib/capture";
+
+export type ThoughtDetailApi = Pick<EntriesApi, "get" | "list" | "create">;
 
 function chronological(a: Entry, b: Entry): number {
   return a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id);
 }
 
 export class ThoughtDetailStore {
+  #api: ThoughtDetailApi;
   thought = $state<Entry | null>(null);
   followUps = $state<Array<Entry>>([]);
   loading = $state(false);
@@ -18,6 +21,10 @@ export class ThoughtDetailStore {
 
   #request = 0;
   #loadedId: string | null = null;
+
+  constructor(api: ThoughtDetailApi) {
+    this.#api = api;
+  }
 
   async load(id: string): Promise<void> {
     if (this.#loadedId === id && !this.loadError) {
@@ -33,8 +40,8 @@ export class ThoughtDetailStore {
 
     try {
       const [thought, children] = await Promise.all([
-        entriesApi.get(id),
-        entriesApi.list(50, id),
+        this.#api.get(id),
+        this.#api.list(50, id),
       ]);
       if (request !== this.#request) {
         return;
@@ -70,7 +77,7 @@ export class ThoughtDetailStore {
     this.submitError = null;
 
     try {
-      const entry = await entriesApi.create({
+      const entry = await this.#api.create({
         ...textEntry(rawText),
         parentId,
       });
@@ -90,4 +97,8 @@ export class ThoughtDetailStore {
   }
 }
 
-export const thoughtDetail = new ThoughtDetailStore();
+export function createThoughtDetailStore(
+  api: ThoughtDetailApi
+): ThoughtDetailStore {
+  return new ThoughtDetailStore(api);
+}

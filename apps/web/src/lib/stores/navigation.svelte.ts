@@ -28,4 +28,6 @@ export class NavigationStore {
   }
 }
 
-export const navigation = new NavigationStore();
+export function createNavigationStore(): NavigationStore {
+  return new NavigationStore();
+}

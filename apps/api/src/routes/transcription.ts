@@ -4,12 +4,12 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import { errorMessage } from "../errors.js";
-import { transcribeAudio } from "../services/transcription.js";
+import type { TranscriptionService } from "../services/transcription.js";
 import { TranscriberUnavailableError } from "../ai/transcriber.js";
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
 
-export function transcription(): Hono {
+export function transcription(service: TranscriptionService): Hono {
   return new Hono().post("/", async (c) => {
     const contentType = c.req.header("content-type") ?? "";
     if (!contentType.includes("multipart/form-data")) {
@@ -37,7 +37,7 @@ export function transcription(): Hono {
     await writeFile(path, new Uint8Array(await audio.arrayBuffer()));
 
     try {
-      const rawText = await transcribeAudio(path);
+      const rawText = await service.transcribe(path);
       return c.json({ rawText });
     } catch (error) {
       if (error instanceof TranscriberUnavailableError) {

@@ -9,7 +9,7 @@
     thoughtTitle,
   } from "$lib/thoughts";
   import ThoughtDetailContent from "$lib/components/thought-detail-content.svelte";
-  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { thoughtOverlay } from "$lib/stores/app.svelte";
   import { cardTarget, pushDistances } from "$lib/thoughts-transition";
 
   interface Props {

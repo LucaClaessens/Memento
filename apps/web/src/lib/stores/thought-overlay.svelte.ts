@@ -35,4 +35,6 @@ export class ThoughtOverlayStore {
   }
 }
 
-export const thoughtOverlay = new ThoughtOverlayStore();
+export function createThoughtOverlayStore(): ThoughtOverlayStore {
+  return new ThoughtOverlayStore();
+}

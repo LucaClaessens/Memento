@@ -1,19 +1,35 @@
 import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
-import { transcriber } from "../ai/transcriber.js";
+import type { Transcriber } from "../ai/transcriber.js";
 
-const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
+export type ConvertAudio = (
+  inputPath: string,
+  outputPath: string
+) => Promise<void>;
 
-async function convertToWav(
+export interface TranscriptionServiceOptions {
+  /** The worker that turns a WAV file into text. */
+  transcriber: Pick<Transcriber, "transcribe">;
+  /** Converts the upload to the worker's 16 kHz mono WAV. */
+  convert?: ConvertAudio;
+  tempDir?: string;
+}
+
+export interface TranscriptionService {
+  /** Convert an uploaded audio blob to WAV and transcribe it on the worker. */
+  transcribe(inputPath: string): Promise<string>;
+}
+
+async function convertWithFfmpeg(
+  ffmpegBin: string,
   inputPath: string,
   outputPath: string
 ): Promise<void> {
   await new Promise<void>((resolve, reject) => {
     const proc = spawn(
-      FFMPEG_BIN,
+      ffmpegBin,
       ["-y", "-i", inputPath, "-ar", "16000", "-ac", "1", outputPath],
       { stdio: ["ignore", "ignore", "pipe"] }
     );
@@ -32,13 +48,24 @@ async function convertToWav(
   });
 }
 
-/** Convert an uploaded audio blob to WAV and transcribe it on the worker. */
-export async function transcribeAudio(inputPath: string): Promise<string> {
-  const wavPath = join(tmpdir(), `memento-${randomUUID()}.wav`);
-  try {
-    await convertToWav(inputPath, wavPath);
-    return await transcriber.transcribe(wavPath);
-  } finally {
-    await rm(wavPath, { force: true }).catch(() => undefined);
-  }
+export function createTranscriptionService({
+  transcriber,
+  convert,
+  tempDir = tmpdir(),
+}: TranscriptionServiceOptions): TranscriptionService {
+  const ffmpegBin = process.env.FFMPEG_BIN ?? "ffmpeg";
+  const convertAudio =
+    convert ?? ((input, output) => convertWithFfmpeg(ffmpegBin, input, output));
+
+  return {
+    async transcribe(inputPath) {
+      const wavPath = join(tempDir, `memento-${crypto.randomUUID()}.wav`);
+      try {
+        await convertAudio(inputPath, wavPath);
+        return await transcriber.transcribe(wavPath);
+      } finally {
+        await rm(wavPath, { force: true }).catch(() => undefined);
+      }
+    },
+  };
 }

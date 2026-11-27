@@ -6,7 +6,7 @@
   import { Skeleton } from "$lib/components/ui/skeleton";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
-  import { thoughtDetail } from "$lib/stores/thought-detail.svelte";
+  import { thoughtDetail } from "$lib/stores/app.svelte";
   import { formatThoughtDate, splitThought } from "$lib/thoughts";
 
   let { visible = false, id = "" }: { visible?: boolean; id?: string } =
