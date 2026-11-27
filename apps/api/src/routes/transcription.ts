@@ -38,12 +38,12 @@ export function transcription(): Hono {
     try {
       const rawText = await transcribeAudio(path);
       return c.json({ rawText });
-    } catch (err) {
-      if (err instanceof TranscriberUnavailableError) {
+    } catch (error) {
+      if (error instanceof TranscriberUnavailableError) {
         return c.json({ error: "transcriber_unavailable" }, 503);
       }
       return c.json(
-        { error: "transcription_failed", message: (err as Error).message },
+        { error: "transcription_failed", message: (error as Error).message },
         500
       );
     } finally {

@@ -113,8 +113,8 @@
         transcribeController.signal
       );
       text = text.trim() ? `${text.trim()} ${transcript}` : transcript;
-    } catch (err) {
-      if ((err as Error).name !== "AbortError") {
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
         entries.submitError = "Couldn’t transcribe the recording.";
       }
     } finally {

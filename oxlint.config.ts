@@ -28,7 +28,6 @@ export default defineConfig({
     "typescript/no-non-null-assertion": "off",
     "typescript/no-unsafe-type-assertion": "off",
     "typescript/use-unknown-in-catch-callback-variable": "off",
-    "unicorn/catch-error-name": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/numeric-separators-style": "off",
     "unicorn/prefer-at": "off",

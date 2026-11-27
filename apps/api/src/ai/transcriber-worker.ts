@@ -30,10 +30,10 @@ try {
       recognizer.decode(stream);
       const result = recognizer.getResult(stream);
       reply({ id: request.id, text: result.text });
-    } catch (err) {
-      reply({ id: request.id, error: (err as Error).message });
+    } catch (error) {
+      reply({ id: request.id, error: (error as Error).message });
     }
   });
-} catch (err) {
-  reply({ ready: false, error: (err as Error).message });
+} catch (error) {
+  reply({ ready: false, error: (error as Error).message });
 }

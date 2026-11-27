@@ -151,7 +151,7 @@ describe("entries API client", () => {
       throw new TypeError("Failed to fetch");
     });
 
-    const error = await api.list().catch((cause: unknown) => cause);
+    const error = await api.list().catch((error_: unknown) => error_);
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ code: "network_error", status: 0 });
