@@ -16,11 +16,19 @@
     entry: Entry;
     now?: Date;
     active?: boolean;
+    first?: boolean;
     pushed?: "up" | "down" | null;
     onclosed?: () => void;
   }
 
-  let { entry, now, active = false, pushed = null, onclosed }: Props = $props();
+  let {
+    entry,
+    now,
+    active = false,
+    first = false,
+    pushed = null,
+    onclosed,
+  }: Props = $props();
 
   const title = $derived(thoughtTitle(entry));
   const summary = $derived(thoughtSummary(entry));
@@ -135,7 +143,8 @@
   bind:this={el}
   href={card ? undefined : resolve(`/thoughts/${entry.id}`)}
   data-thought-id={entry.id}
-  class="row -mx-4 block px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
+  class="row -mx-4 block border-border px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
+  class:border-t={!first}
   class:card
   class:title-large={titleLarge}
   class:pushed-up={pushed === "up"}
@@ -220,6 +229,8 @@
     font-size: 2.25rem;
     line-height: 1.1;
     letter-spacing: -0.028em;
+    /* Follow the card's width so the line breaks stay stable while it grows. */
+    width: 100%;
   }
 
   .detail {

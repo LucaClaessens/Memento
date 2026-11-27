@@ -69,16 +69,17 @@
     </Alert.Root>
   {/if}
 
-  <ul class="flex flex-col" class:is-open={activeIndex !== -1}>
+  <ul class="flex flex-col">
     {#each entries as entry, index (entry.id)}
       {@const pushed = thoughtOverlay.closing
         ? null
         : pushDirection(index, activeIndex)}
-      <li class="border-t border-border first:border-t-0">
+      <li>
         <ThoughtRow
           {entry}
           {now}
           active={thoughtOverlay.activeId === entry.id}
+          first={index === 0}
           {pushed}
           onclosed={() => thoughtOverlay.finishClose()}
         />
@@ -86,9 +87,3 @@
     {/each}
   </ul>
 {/if}
-
-<style>
-  .is-open > :global(li) {
-    border-color: transparent;
-  }
-</style>
