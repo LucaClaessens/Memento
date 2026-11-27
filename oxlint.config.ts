@@ -28,7 +28,6 @@ export default defineConfig({
     // Baseline: rules that fail on the current code. Each is either fixed in a
     // follow-up commit (and removed from this list) or kept off with a reason.
     "import/no-namespace": "off",
-    "quality/no-unsafe-dictionary-type": "off",
     "quality/no-unknown-returns": "off",
     "typescript/no-non-null-assertion": "off",
     "typescript/no-unsafe-type-assertion": "off",
