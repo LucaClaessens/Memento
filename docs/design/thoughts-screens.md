@@ -31,6 +31,13 @@ clustering, spatial canvas. See issue #36.
 - UI says "Thoughts"; domain and code stay "Entry" (see GLOSSARY.md).
 - The whiteboard landing lands before voice capture (#3), so #3 adds the record
   control to the new surface.
+- Primary navigation is one floating bottom pill from the root layout (settled in #43,
+  superseding the thin top bar below): two config-driven tabs, Write and Thoughts.
+  Page headings are content and scroll with the page.
+- The write screen opens as a calm empty surface: no eyebrow, greeting, date, header
+  actions, streaks, or scores. The enlarged "What's on your mind?" placeholder is the
+  only prompt, and the textarea does not grab focus on arrival (switching tabs must not
+  open the keyboard or shift the layout).
 
 ## 3. Information architecture
 
@@ -40,9 +47,13 @@ Routes (SvelteKit):
 - `/thoughts` — Recent thoughts list.
 - `/thoughts/[id]` — Thought detail + thread.
 
-Navigation is deliberately minimal: a thin top bar with the app mark and a "Thoughts"
-link on the landing; a "← Thoughts" back link and a "Write" link on detail. No sidebar,
-no dashboard. Mobile-first; the top bar collapses to app mark + single link.
+Navigation is one floating bottom pill from the root layout, visible on every route
+and in every state (loading, empty, error, not-found). It is config-driven and starts
+with two tabs — Write (`/`) and Thoughts (`/thoughts`) — with icon and label. The pill
+hides while the on-screen keyboard is open; tapping the active tab scrolls its view to
+the top. Detail keeps the pill with Thoughts active alongside a "← Thoughts" back link.
+No sidebar, no dashboard, and no top navigation bar. The same pill is used at all
+viewport widths; the app is not a widescreen target.
 
 Capture keeps today's Entry API and store behavior: explicit send (button) and
 Cmd/Ctrl+Enter, text preserved exactly (no trimming), client-generated id and
@@ -53,23 +64,27 @@ timestamp (ADR-0004).
 ### 4.1 Layout, phone
 
 - Full viewport height (`100dvh`), no page scroll; the textarea is the scroll
-  container.
-- Top bar: app mark (left) + "Thoughts" link (right). ~48px.
-- Body: a single `<textarea>` filling all remaining space, font-size 1.125rem,
-  line-height 1.6, no border, transparent background, padding 1.25rem.
-- Placeholder: "What's on your mind?" in muted color. (Placeholder is hint only; the
-  field carries an `aria-label`.)
+  container. The root layout owns the shell, with the bottom pill as a flow child, so
+  it never scrolls away and never covers the toolbar.
+- No opening block: the writing area starts at the top with generous padding.
+- Body: a single `<textarea>` filling all remaining space, font-size 1.5rem on phone
+  and ~1.75rem on desktop, line-height ~1.45, no border, transparent background.
+- Placeholder: "What's on your mind?" in muted color at the same large type size. It is
+  a hint only; the field carries `aria-label="Capture a thought"`. It disappears as
+  soon as the user types.
 - Bottom toolbar (~56px): left reserved record slot (hidden until #3, 40px reserved
   to avoid shift), center a muted hint "⌘↵ to save", right "Capture" button. A prompt
   slot sits above the textarea (section 4.4).
 
 ### 4.2 Layout, desktop
 
-Same structure, content column capped at 720px and centered, top bar full width. The
-textarea and toolbar align to the column. Font-size 1.125rem. No multi-column.
+Same structure, content column capped at 720px and centered, bottom pill centered.
+The textarea and toolbar align to the column. Font-size ~1.75rem. No multi-column.
 
 ### 4.3 Behavior
 
+- Arriving on the write screen does not focus the textarea; the empty surface and its
+  prompt stay visible until the user taps or types. Focus is only moved after a capture.
 - Submit via button or Cmd/Ctrl+Enter. Disabled when empty/over limit/submitting.
 - On success: clear the textarea, move focus back to it, announce "Saved." in an
   `aria-live` region; optionally show "Saved — view in Thoughts". Text is never
@@ -101,7 +116,8 @@ textarea and toolbar align to the column. Font-size 1.125rem. No multi-column.
 
 - `<textarea aria-label="Capture a thought">`; placeholder is not the accessible name.
 - Submit is a real `<button type="submit">`; Cmd/Ctrl+Enter handled via keydown.
-- Focus returns to the textarea after a successful capture.
+- No focus is grabbed on arrival; the textarea is focused only after a successful
+  capture, so switching tabs does not open the keyboard or shift the layout.
 - Saved/error status in `aria-live="polite"`.
 - No color-only signaling; contrast meets WCAG AA on both themes.
 - Respect `prefers-reduced-motion` (spinner is the only motion).
@@ -110,7 +126,9 @@ textarea and toolbar align to the column. Font-size 1.125rem. No multi-column.
 
 ### 5.1 Layout, phone
 
-- Top bar: "Thoughts" title (left) + "Write" link (right).
+- "Thoughts" heading is page content and scrolls with the list; navigation stays in
+  the root layout's bottom pill. Each list view scrolls in its own container so the
+  pill cannot be scrolled off screen.
 - Vertical list of cards, full width with 1rem horizontal padding, gap 0.75rem.
 - Each card: title (semibold, one line, ellipsis), optional summary (muted, one
   line, ellipsis), timestamp (xs, muted). Whole card is a link/button.
@@ -291,5 +309,7 @@ landing, #38 for recent thoughts). Track cleanup in those issues.
 
 ## 12. Open questions
 
-None blocking. Nav placement (top bar) and single-column desktop list are settled
-here; revisit only if browser verification shows a problem.
+None blocking. Navigation is a bottom pill (#43) and the single-column list is
+settled here; revisit only if browser verification shows a problem. A compose FAB and
+type-vs-speak affordances are deferred to #3; a desktop sidebar/top tabs are deferred
+until there are more than five tabs.

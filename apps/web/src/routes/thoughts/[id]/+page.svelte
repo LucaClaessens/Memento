@@ -8,7 +8,6 @@
   import { Skeleton } from "$lib/components/ui/skeleton";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
-  import AppBar from "$lib/components/app-bar.svelte";
   import { thoughtDetail } from "$lib/stores/thought-detail.svelte";
   import { formatThoughtDate, splitThought } from "$lib/thoughts";
 
@@ -68,15 +67,18 @@
   <title>{display?.title ?? "Thought"} — Memento</title>
 </svelte:head>
 
-<div class="flex min-h-dvh flex-col bg-background text-foreground">
-  <AppBar
-    left={{ href: "/thoughts", label: "← Thoughts" }}
-    right={{ href: "/", label: "Write" }}
-  />
-
+<div class="flex h-full min-h-0 flex-col bg-background text-foreground">
   <main
-    class="mx-auto w-full max-w-[720px] flex-1 px-4 pt-6 pb-16 md:px-0 md:pt-10"
+    data-scroll-container
+    class="mx-auto w-full max-w-[720px] min-h-0 flex-1 overflow-y-auto px-4 pt-6 pb-8 md:px-0 md:pt-10"
   >
+    <a
+      href="/thoughts"
+      class="mb-6 inline-block rounded-sm text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+    >
+      ← Thoughts
+    </a>
+
     {#if thoughtDetail.loading || (!thoughtDetail.thought && !thoughtDetail.notFound && !thoughtDetail.loadError)}
       <div class="flex flex-col gap-3" aria-busy="true">
         <span class="sr-only" role="status">Loading thought…</span>
