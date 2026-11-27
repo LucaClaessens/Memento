@@ -22,7 +22,7 @@
   let elapsed = $state(0);
   let timer: ReturnType<typeof setInterval> | null = null;
   let mediaRecorder: MediaRecorder | null = null;
-  let chunks: Blob[] = [];
+  let chunks: Array<Blob> = [];
   let audioContext: AudioContext | null = null;
   let analyser = $state.raw<AnalyserNode | null>(null);
 

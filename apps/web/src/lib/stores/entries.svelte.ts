@@ -3,7 +3,7 @@ import { entriesApi } from "$lib/api";
 import { textEntry } from "$lib/capture";
 
 export class EntriesStore {
-  entries = $state<Entry[]>([]);
+  entries = $state<Array<Entry>>([]);
   loading = $state(false);
   submitting = $state(false);
   loadError = $state<string | null>(null);

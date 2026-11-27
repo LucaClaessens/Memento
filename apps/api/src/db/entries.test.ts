@@ -6,7 +6,7 @@ import { createEntriesRepository } from "./entries.js";
 import type { NewEntry } from "./entries.js";
 import { openDatabase } from "./index.js";
 
-const tempDirs: string[] = [];
+const tempDirs: Array<string> = [];
 
 function tempDbPath(): string {
   const dir = mkdtempSync(join(tmpdir(), "memento-db-"));

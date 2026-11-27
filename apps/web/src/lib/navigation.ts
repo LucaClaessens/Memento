@@ -7,7 +7,7 @@ export interface NavigationTab {
 }
 
 /** Primary destinations in display order. Add tabs here as features land. */
-export const tabs: readonly NavigationTab[] = [
+export const tabs: ReadonlyArray<NavigationTab> = [
   { href: "/", label: "Write", icon: "pen" },
   { href: "/thoughts", label: "Thoughts", icon: "notebook" },
 ];

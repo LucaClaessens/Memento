@@ -9,7 +9,7 @@ function chronological(a: Entry, b: Entry): number {
 
 export class ThoughtDetailStore {
   thought = $state<Entry | null>(null);
-  followUps = $state<Entry[]>([]);
+  followUps = $state<Array<Entry>>([]);
   loading = $state(false);
   loadError = $state<string | null>(null);
   notFound = $state(false);

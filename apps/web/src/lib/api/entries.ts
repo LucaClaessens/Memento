@@ -8,7 +8,7 @@ export function createEntriesApi(client: ApiClient) {
      * Newest first, as ordered by the API. Without a parentId the API returns
      * roots; with one it returns that entry's follow-ups.
      */
-    async list(limit = 50, parentId?: string): Promise<Entry[]> {
+    async list(limit = 50, parentId?: string): Promise<Array<Entry>> {
       const params = new URLSearchParams({ limit: String(limit) });
       if (parentId) {
         params.set("parentId", parentId);

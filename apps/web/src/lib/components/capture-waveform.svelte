@@ -25,7 +25,7 @@
     }
 
     let color = getComputedStyle(el).color;
-    let levels: number[] = [];
+    let levels: Array<number> = [];
     let peak = 0;
     let raf = 0;
     let lastSampleAt = 0;

@@ -9,7 +9,7 @@
   import { pushDirection } from "$lib/thoughts-transition";
 
   interface Props {
-    entries: Entry[];
+    entries: Array<Entry>;
     loading?: boolean;
     error?: string | null;
     onRetry?: () => void;

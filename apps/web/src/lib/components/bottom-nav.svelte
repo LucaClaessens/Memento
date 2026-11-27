@@ -13,7 +13,7 @@
   );
 
   let container: HTMLDivElement | null = $state(null);
-  let tabEls: HTMLElement[] = $state([]);
+  let tabEls: Array<HTMLElement> = $state([]);
   let indicator = $state({ x: 0, width: 0 });
   let ready = $state(false);
 
