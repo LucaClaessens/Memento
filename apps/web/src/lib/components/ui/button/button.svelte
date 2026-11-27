@@ -72,7 +72,6 @@
     bind:this={ref}
     data-slot="button"
     class={cn(buttonVariants({ variant, size }), className)}
-    // eslint-disable-next-line svelte/no-navigation-without-resolve
     href={disabled ? undefined : href}
     aria-disabled={disabled}
     role={disabled ? "link" : undefined}

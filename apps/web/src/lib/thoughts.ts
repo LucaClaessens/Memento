@@ -118,7 +118,7 @@ export function formatThoughtDate(
   now: Date = new Date(),
   locale?: string
 ): string {
-  const date = createdAt instanceof Date ? createdAt : new Date(createdAt);
+  const date = typeof createdAt === "string" ? new Date(createdAt) : createdAt;
   const format = formatters(locale);
   const days = Math.round((startOfDay(now) - startOfDay(date)) / 86_400_000);
 

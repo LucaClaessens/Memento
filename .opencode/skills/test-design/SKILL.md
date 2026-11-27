@@ -45,8 +45,8 @@ Memento already follows this; keep it:
 1. **No module mocks.** Do not replace a module with `vi.mock`/`mock.module`. Pass the
    dependency in as an argument or prop and hand the test a small fake, or test the
    pure logic on its own. Behavior that needs the real modules together is proven by
-   a scenario in the running app. (Enforced as a custom oxlint rule during the
-   #48 migration.)
+   a scenario in the running app. (A custom oxlint rule is planned; until it
+   lands, reviewers enforce this.)
 2. **No source-text assertions.** Do not read source files as text in tests to assert
    structure. If the structure matters, enforce it with a lint rule or a type.
 3. **No real waits.** Do not `sleep`/wait on real timers in tests. Use fake timers

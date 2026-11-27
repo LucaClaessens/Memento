@@ -6,6 +6,11 @@ export default defineConfig({
   env: {
     ...cloudflare.env,
     // Svelte runes ($state, $props, $derived, $bindable, ...) are globals in .svelte files.
+    //
+    // Oxlint lints only the <script> block of a .svelte file. Template rules from
+    // eslint-plugin-svelte (require-each-key, no-unused-props, ...) have no oxlint
+    // equivalent; `svelte-check` and the Svelte autofixer cover compile and a11y
+    // problems instead. This is the deliberate trade-off of the migration (#48).
     svelte: true,
   },
   ignorePatterns: [
@@ -46,12 +51,24 @@ export default defineConfig({
       files: ["apps/web/src/lib/api/client.ts"],
       rules: { "quality/no-unknown-returns": "off" },
     },
+    {
+      // `parseBody()` yields a DOM `File`; `instanceof File` is the only
+      // narrowing TypeScript offers for that value.
+      files: ["apps/api/src/routes/transcription.ts"],
+      rules: { "@nkzw/no-instanceof": "off" },
+    },
   ],
   rules: {
-    // Kept off on purpose. Each entry states why the rule does not fit.
-    //
-    // TypeScript's only way to narrow `unknown` to an error or a DOM class
-    // (`File`) is `instanceof`; the rule cannot be satisfied without casts.
-    "@nkzw/no-instanceof": "off",
+    // Keep the old ESLint coverage: unused arguments and caught errors are
+    // errors unless their name starts with `_`.
+    "no-unused-vars": [
+      "error",
+      {
+        args: "after-used",
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_",
+      },
+    ],
   },
 });

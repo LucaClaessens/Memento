@@ -18,5 +18,7 @@ export async function ollamaGenerate(
   if (!res.ok) {
     throw new Error(`Ollama error: ${res.status}`);
   }
+  // A body without a string `response` is a contract violation; fail loudly
+  // instead of returning undefined to a caller that expects text.
   return GenerateResponseSchema.parse(await res.json()).response;
 }

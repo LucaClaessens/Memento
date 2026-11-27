@@ -16,7 +16,7 @@ export function transcription(): Hono {
       return c.json({ error: "invalid_content_type" }, 415);
     }
 
-    let body;
+    let body: Record<string, string | File>;
     try {
       body = await c.req.parseBody();
     } catch {
