@@ -1,7 +1,7 @@
 # All AI processing runs locally; no external AI APIs
 
 Memento handles health-adjacent personal data and the user treats it as sensitive.
-Transcription (faster-whisper), extraction, and weekly-review generation (Ollama) all
+Transcription (Parakeet TDT 0.6B v3 via sherpa-onnx), extraction, and weekly-review generation (Ollama) all
 run on the user's own Mac Mini; no raw text, audio, names, or medical details leave the
 local network. The only network traffic is phone↔Mac Mini over Tailscale. This rules
 out hosted transcription/LLM services even when convenient, and is the reason we accept

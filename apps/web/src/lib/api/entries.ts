@@ -29,6 +29,17 @@ export function createEntriesApi(client: ApiClient) {
       const payload = await client.post("/entries", input);
       return EntrySchema.parse(payload);
     },
+
+    async transcribeAudio(file: Blob, signal?: AbortSignal): Promise<string> {
+      const form = new FormData();
+      form.append("audio", file, "recording.webm");
+      const payload = await client.postForm("/transcribe", form, signal);
+      const rawText = (payload as { rawText?: unknown }).rawText;
+      if (typeof rawText !== "string") {
+        throw new Error("Invalid transcription response");
+      }
+      return rawText;
+    },
   };
 }
 

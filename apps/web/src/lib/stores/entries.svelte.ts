@@ -27,7 +27,6 @@ export class EntriesStore {
 
   async capture(rawText: string): Promise<boolean> {
     if (this.submitting) return false;
-
     this.submitting = true;
     this.submitError = null;
 

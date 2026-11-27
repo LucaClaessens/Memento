@@ -111,6 +111,26 @@ describe("entries API client", () => {
     });
   });
 
+  it("posts audio to /transcribe and returns the transcript", async () => {
+    const fetchMock = vi.fn(async (_input: string, _init?: RequestInit) =>
+      jsonResponse({ rawText: "hello there" })
+    );
+    const blob = new Blob(["audio"], { type: "audio/webm" });
+    const controller = new AbortController();
+
+    const text = await clientWith(fetchMock).transcribeAudio(
+      blob,
+      controller.signal
+    );
+
+    expect(text).toBe("hello there");
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe("http://api.test/transcribe");
+    expect(init?.method).toBe("POST");
+    expect(init?.body).toBeInstanceOf(FormData);
+    expect(init?.signal).toBe(controller.signal);
+  });
+
   it("raises an ApiError with the API error code", async () => {
     const api = clientWith(async () =>
       jsonResponse({ error: "invalid_entry" }, 400)

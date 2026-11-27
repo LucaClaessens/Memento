@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import type { Db } from "./db/types.js";
 import { entries } from "./routes/entries.js";
 import { health } from "./routes/health.js";
+import { transcription } from "./routes/transcription.js";
 
 export const DEFAULT_WEB_ORIGINS = [
   "http://localhost:5173",
@@ -40,6 +41,7 @@ export function createApp({ db, allowedOrigins }: AppOptions): Hono {
 
   app.route("/health", health);
   app.route("/entries", entries(db));
+  app.route("/transcribe", transcription());
   app.get("/", (c) => c.text("Memento API"));
 
   return app;
