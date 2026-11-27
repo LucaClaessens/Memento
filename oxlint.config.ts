@@ -21,7 +21,6 @@ export default defineConfig({
     // follow-up commit (and removed from this list) or kept off with a reason.
     "import/no-namespace": "off",
     "no-console": "off",
-    "no-promise-executor-return": "off",
     "quality/no-known-value-widening": "off",
     "quality/no-unsafe-dictionary-type": "off",
     "quality/no-unknown-returns": "off",

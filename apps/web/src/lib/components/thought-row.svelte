@@ -50,7 +50,10 @@
 
   const reduced = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const wait = (ms: number) =>
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, ms);
+    });
 
   onMount(() => {
     const update = () => {
