@@ -26,7 +26,7 @@
   const summary = $derived(thoughtSummary(entry));
   const dateLabel = $derived(formatThoughtDate(entry.createdAt, now));
 
-  let el: HTMLAnchorElement | null = $state(null);
+  let el: HTMLElement | null = $state(null);
   let rect = $state<{
     top: number;
     left: number;
@@ -60,8 +60,7 @@
       // Push siblings by the same distance the card's edges travel, so the
       // card and the list move as one surface.
       const push = pushDistances(r, window.innerHeight);
-      thoughtOverlay.pushUp = push.up;
-      thoughtOverlay.pushDown = push.down;
+      thoughtOverlay.setPush(push.up, push.down);
       card = true;
       void tick().then(() => {
         requestAnimationFrame(() => {
@@ -69,6 +68,10 @@
           titleLarge = true;
           // Fade the detail in across the grow rather than after it.
           setTimeout(() => (showDetail = true), reduced() ? 0 : 120);
+          setTimeout(
+            () => el?.focus({ preventScroll: true }),
+            reduced() ? 0 : 120
+          );
         });
       });
     }
@@ -87,8 +90,7 @@
     if (closing) return;
     closing = true;
     thoughtOverlay.closing = true;
-    thoughtOverlay.pushUp = 0;
-    thoughtOverlay.pushDown = 0;
+    thoughtOverlay.setPush(0, 0);
     showDetail = false;
     // Shrink the title and the card together so the title does not lag behind.
     titleLarge = false;
@@ -97,6 +99,7 @@
     card = false;
     closing = false;
     onclosed?.();
+    requestAnimationFrame(() => el?.focus({ preventScroll: true }));
   }
 
   const target = $derived(cardTarget(viewport));
@@ -127,11 +130,12 @@
   ></div>
 {/if}
 
-<a
+<svelte:element
+  this={card ? "div" : "a"}
   bind:this={el}
   href={card ? undefined : resolve(`/thoughts/${entry.id}`)}
   data-thought-id={entry.id}
-  class="-mx-4 block px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
+  class="row -mx-4 block px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
   class:card
   class:title-large={titleLarge}
   class:pushed-up={pushed === "up"}
@@ -140,6 +144,10 @@
   role={card ? "dialog" : undefined}
   aria-modal={card ? "true" : undefined}
   aria-label={card ? title : undefined}
+  tabindex={card ? -1 : undefined}
+  onkeydown={(event: KeyboardEvent) => {
+    if (card && event.key === "Escape") close();
+  }}
   style={card ? cardStyle : pushStyle}
 >
   <div class="row-head">
@@ -161,23 +169,23 @@
   {/if}
   {#if card}
     <div class="detail">
-      <ThoughtDetailContent visible={showDetail} />
+      <ThoughtDetailContent visible={showDetail} id={entry.id} />
     </div>
   {/if}
-</a>
+</svelte:element>
 
 <style>
   .placeholder {
     width: 100%;
   }
 
-  a {
+  .row {
     transition:
       transform var(--m-dur-expand) var(--ease-out),
       background-color 150ms var(--ease-out);
   }
 
-  a.card {
+  .row.card {
     overflow-y: auto;
     margin: 0;
     background: var(--background);
@@ -189,7 +197,7 @@
       width var(--m-dur-expand) var(--ease-out),
       height var(--m-dur-expand) var(--ease-out);
   }
-  a.card:hover {
+  .row.card:hover {
     background: var(--background);
   }
 
@@ -200,11 +208,9 @@
     line-height: 1.34;
     font-size: 1.06rem;
     width: fit-content;
-    transition:
-      font-size var(--m-dur-expand) var(--ease-out),
-      letter-spacing var(--m-dur-expand) var(--ease-out);
+    transition: font-size var(--m-dur-expand) var(--ease-out);
   }
-  a.title-large .row-title {
+  .row.title-large .row-title {
     font-size: 2.25rem;
     line-height: 1.1;
     letter-spacing: -0.028em;
@@ -213,17 +219,18 @@
   .detail {
     pointer-events: none;
   }
-  a.card.show-detail .detail {
+  .row.card.show-detail .detail {
     pointer-events: auto;
   }
 
-  a.pushed-up,
-  a.pushed-down {
+  .row.pushed-up,
+  .row.pushed-down {
     pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    a.card,
+    .row,
+    .row.card,
     .row-title,
     .detail {
       transition: none;

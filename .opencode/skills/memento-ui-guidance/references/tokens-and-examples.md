@@ -99,9 +99,10 @@ setTimeout(() => (showDetail = true), 240);
 }
 ```
 
-Close is the same animation in reverse: fade detail out (~180ms), shrink to the saved
-rect for the same duration, then clear inline geometry. Clear inline `top/left/width/
-height` after shrinking so the row resizes correctly when it returns to the list.
+Close is the same animation in reverse and starts on the same frame: set the title back
+to list size, reset the push distances to 0 (so siblings return as the card shrinks),
+fade the detail out, and shrink to the saved rect. Clear inline `top/left/width/height`
+after shrinking so the row resizes correctly when it returns to the list.
 
 Why not the View Transitions API: it snapshots pages and needs unique
 `view-transition-name`s; it does not model "the card grows and pushes its neighbours
@@ -109,63 +110,91 @@ aside". The in-place card does, and keeps the list's scroll position intact.
 
 ## Top bar with a state-driven back arrow
 
-The list header is a fixed 56px bar with no divider line. At rest the title is large.
-When a card opens, the title drops to its small size and a back arrow fades in to its
-left; the title does not move (the arrow lives in the header's left padding).
+The list header is a sticky 56px bar with no divider line. At rest the title is large.
+On scroll it shrinks; when a card opens it is small by state and a 40px back target
+fades in to its left, with the glyph aligned to the row content's left edge. The title
+eases inward 1.25rem to make room. The bar is opaque with a short gradient strip below
+it so content scrolls under without a hard edge.
 
 ```svelte
-<header class="thoughts-header" class:small>
-  <button
-    class="back-arrow"
-    class:visible={small}
-    aria-label="Back to thoughts"
-  >
-    ←
-  </button>
+<header class="thoughts-header" class:small class:back class:scrolled>
+  <div class="topbar-gradient" aria-hidden="true"></div>
+  <button class="back-arrow" aria-label="Back to thoughts">←</button>
   <h1 class="title">Thoughts</h1>
 </header>
 ```
 
 ```css
 .thoughts-header {
-  position: relative;
-  z-index: 5;
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
-  flex: 0 0 3.5rem;
   height: 3.5rem; /* fixed: the card target never moves */
   align-items: center;
-  padding: 0 1rem;
+  padding: 0;
   background: var(--background);
+}
+.topbar-gradient {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  background: linear-gradient(to bottom, var(--background), transparent);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+  pointer-events: none;
+}
+.scrolled .topbar-gradient {
+  opacity: 1;
 }
 .back-arrow {
   position: absolute;
-  left: 0.125rem;
+  left: 0.2rem;
   top: 50%;
-  transform: translate(-0.35rem, -50%);
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
   opacity: 0;
+  transform: translate(-0.35rem, -50%);
+  pointer-events: none;
   transition:
     opacity 200ms var(--ease-out),
     transform 200ms var(--ease-out);
 }
-.small .back-arrow {
+.back .back-arrow {
   opacity: 1;
   transform: translate(0, -50%);
+  pointer-events: auto;
 }
 .title {
   font-size: 2.25rem;
   width: fit-content;
-  transition: font-size var(--m-dur-base) var(--ease-out);
+  transition:
+    font-size var(--m-dur-base) var(--ease-out),
+    margin-left var(--m-dur-base) var(--ease-out);
 }
 .small .title {
   font-size: 1.125rem;
+}
+.back .title {
+  margin-left: 1.25rem;
 }
 ```
 
 ## Examples: Memento screens
 
-- **Thoughts list → thought detail:** the tapped row grows to fullscreen, neighbours
-  move aside and fade, the row title grows to the detail title size, detail content
-  fades in; close reverses it and returns to the original row.
+- **Thoughts list → thought detail:** the tapped row grows to fullscreen, rows above and
+  below move aside by the card's edge travel (no fade, no gap), the row title grows to the
+  detail title size, detail content fades in across the grow; close reverses it and
+  returns to the original row.
 - **Bottom nav:** already raised pill with tone step; keep as the reference for
   "controls stand up".
 - **Capture form:** input pressed-in in light theme; submit button raised.

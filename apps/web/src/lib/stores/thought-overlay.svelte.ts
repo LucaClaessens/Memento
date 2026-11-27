@@ -10,12 +10,19 @@ export class ThoughtOverlayStore {
     this.activeId = id;
   }
 
+  /** The distance the rows above and below must travel with the card. */
+  setPush(up: number, down: number): void {
+    this.pushUp = up;
+    this.pushDown = down;
+  }
+
   close(): void {
     this.activeId = null;
   }
 
   requestClose(): void {
-    this.closeHandler?.();
+    if (this.closeHandler) this.closeHandler();
+    else this.finishClose();
   }
 
   finishClose(): void {

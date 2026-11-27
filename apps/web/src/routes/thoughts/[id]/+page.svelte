@@ -22,7 +22,8 @@
   });
 
   onDestroy(() => {
-    thoughtOverlay.close();
+    // Browser back/swipe: let the card animate out when it is on screen.
+    thoughtOverlay.requestClose();
   });
 </script>
 

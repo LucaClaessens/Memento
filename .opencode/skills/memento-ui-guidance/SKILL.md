@@ -135,15 +135,18 @@ properties recalculate style continuously.
 - **Reduced motion first.** Under `prefers-reduced-motion: reduce`, disable the expand,
   morphs, springs, and parallax; keep short opacity fades (or instant). Never disable
   state feedback (focus, loading).
-- **Continuity via an expandable card, not a page swap.** The tapped list row grows in
-  place to fullscreen; the rows around it move aside and fade; the new detail content
-  fades in once the card is fullscreen. The row's title grows with the card from list
-  size to detail size, so the eye follows the same object. Do not use the View Transitions
-  API for this; keep the list mounted (SvelteKit layout) and drive an overlay component.
+- **Continuity via an expandable card, not a page swap.** The tapped list row itself grows
+  in place to fullscreen; the rows above and below move aside by exactly the card's edge
+  travel (no gap opens); the new detail content fades in across the grow. The row's title
+  grows with the card from list size to detail size, so the eye follows the same object.
+  Do not use the View Transitions API for this; keep the list mounted (SvelteKit layout)
+  and let the active row become the card. Compute the push distances with
+  `pushDistances` / `pushDirection` (`$lib/thoughts-transition.ts`).
 - **Top bar stays put.** The list header remains; no divider line. On open the title
-  drops to its small (scrolled) size and a back arrow fades in to its left without
-  shifting the title. The top bar has a fixed height (56px) so the card target never
-  moves during the animation.
+  drops to its small (scrolled) size and a back arrow fades in to its left; the title
+  eases inward slightly (1.25rem) to make room. The top bar has a fixed height (56px) so
+  the card target never moves during the animation. The back control is a 40px target
+  with the glyph aligned to the row content's left edge.
 - **Geometry is allowed only for the expandable card.** It transitions `top`, `left`,
   `width`, `height` from the row rect to the stage (`clamp to viewport`, below the top
   bar). Everything else animates `transform`/`opacity`. Keep it to that one element and
@@ -155,9 +158,10 @@ properties recalculate style continuously.
   and the list lands where the user left it.
 - **Focus:** move focus into the expanded card (heading or container) when it settles;
   return it to the row on close.
-- **Scroll-aware title (list at rest):** the list title may shrink on scroll, but when a
-  card expands the title shrinks by state, not scroll. Use a gradient backdrop only if the
-  title sits over scrolling content; a plain opaque top bar needs none.
+- **Scroll-aware title (list at rest):** the list title shrinks past ~40px of scroll; when
+  a card expands the title is small by state, not scroll. The bar is opaque and content
+  scrolls under it, so it carries a short gradient strip below its bottom edge (never a
+  line) to soften that boundary. The same strip is present while a card is open.
 - **Floating surfaces vs the card:** menus/popovers/pickers floating over scrolling
   content use a gradient backdrop; modal/bottom-sheet scrims use a dim scrim. The
   expandable card is opaque fullscreen (no scrim, no shadow at rest).

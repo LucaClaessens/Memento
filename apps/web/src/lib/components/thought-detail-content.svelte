@@ -9,7 +9,8 @@
   import { thoughtDetail } from "$lib/stores/thought-detail.svelte";
   import { formatThoughtDate, splitThought } from "$lib/thoughts";
 
-  let { visible = false }: { visible?: boolean } = $props();
+  let { visible = false, id = "" }: { visible?: boolean; id?: string } =
+    $props();
 
   const display = $derived(
     thoughtDetail.thought ? splitThought(thoughtDetail.thought) : null
@@ -74,8 +75,7 @@
         <Button
           variant="outline"
           size="sm"
-          onclick={() =>
-            void thoughtDetail.load(thoughtDetail.thought?.id ?? "")}
+          onclick={() => void thoughtDetail.load(id)}
         >
           Retry
         </Button>

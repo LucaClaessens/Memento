@@ -158,16 +158,5 @@
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* Motion tokens are defined above for component use. The thoughts detail uses
-   an in-place expandable overlay (see expandable-thought.svelte), not view
-   transitions, so no view-transition pseudo-element rules are needed. */
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(row-title) {
-    animation-duration: 1ms;
-  }
-  ::view-transition-old(row-title),
-  ::view-transition-new(row-title) {
-    animation-duration: 120ms;
-  }
-}
+/* The thoughts detail uses an in-place expanding card (see thought-row.svelte),
+   not the View Transitions API, so no view-transition rules are needed. */

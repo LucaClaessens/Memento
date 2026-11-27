@@ -60,8 +60,12 @@
   .back-arrow {
     position: absolute;
     top: 50%;
-    left: 0;
+    left: 0.2rem;
     z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
     padding: 0;
     border: 0;
     background: none;
@@ -71,6 +75,7 @@
     cursor: pointer;
     opacity: 0;
     transform: translate(-0.35rem, -50%);
+    pointer-events: none;
     transition:
       opacity 200ms var(--ease-out),
       transform 200ms var(--ease-out);
@@ -79,6 +84,7 @@
   .back .back-arrow {
     opacity: 1;
     transform: translate(0, -50%);
+    pointer-events: auto;
   }
 
   .title {
