@@ -34,8 +34,10 @@ clustering, spatial canvas. See issue #36.
 - Primary navigation is one floating bottom pill from the root layout (settled in #43,
   superseding the thin top bar below): two config-driven tabs, Write and Thoughts.
   Page headings are content and scroll with the page.
-- The write screen opens with a small "Memento" eyebrow, a time-of-day greeting, and
-  the full date — no streaks, scores, or header actions.
+- The write screen opens as a calm empty surface: no eyebrow, greeting, date, header
+  actions, streaks, or scores. The enlarged "What's on your mind?" placeholder is the
+  only prompt, and the textarea does not grab focus on arrival (switching tabs must not
+  open the keyboard or shift the layout).
 
 ## 3. Information architecture
 
@@ -64,13 +66,12 @@ timestamp (ADR-0004).
 - Full viewport height (`100dvh`), no page scroll; the textarea is the scroll
   container. The root layout owns the shell, with the bottom pill as a flow child, so
   it never scrolls away and never covers the toolbar.
-- Opening block: small non-link "Memento" eyebrow, dynamic lowercase greeting
-  ("good afternoon."), and full date ("Thursday, November 27"). Copy lives in one
-  config module; no streaks, counts, goals, or header actions.
-- Body: a single `<textarea>` filling all remaining space, font-size 1.125rem,
-  line-height 1.6, no border, transparent background, padding 1.25rem.
-- Placeholder: "What's on your mind?" in muted color. (Placeholder is hint only; the
-  field carries an `aria-label`.)
+- No opening block: the writing area starts at the top with generous padding.
+- Body: a single `<textarea>` filling all remaining space, font-size 1.5rem on phone
+  and ~1.75rem on desktop, line-height ~1.45, no border, transparent background.
+- Placeholder: "What's on your mind?" in muted color at the same large type size. It is
+  a hint only; the field carries `aria-label="Capture a thought"`. It disappears as
+  soon as the user types.
 - Bottom toolbar (~56px): left reserved record slot (hidden until #3, 40px reserved
   to avoid shift), center a muted hint "⌘↵ to save", right "Capture" button. A prompt
   slot sits above the textarea (section 4.4).
@@ -78,10 +79,12 @@ timestamp (ADR-0004).
 ### 4.2 Layout, desktop
 
 Same structure, content column capped at 720px and centered, bottom pill centered.
-The textarea and toolbar align to the column. Font-size 1.125rem. No multi-column.
+The textarea and toolbar align to the column. Font-size ~1.75rem. No multi-column.
 
 ### 4.3 Behavior
 
+- Arriving on the write screen does not focus the textarea; the empty surface and its
+  prompt stay visible until the user taps or types. Focus is only moved after a capture.
 - Submit via button or Cmd/Ctrl+Enter. Disabled when empty/over limit/submitting.
 - On success: clear the textarea, move focus back to it, announce "Saved." in an
   `aria-live` region; optionally show "Saved — view in Thoughts". Text is never
@@ -113,7 +116,8 @@ The textarea and toolbar align to the column. Font-size 1.125rem. No multi-colum
 
 - `<textarea aria-label="Capture a thought">`; placeholder is not the accessible name.
 - Submit is a real `<button type="submit">`; Cmd/Ctrl+Enter handled via keydown.
-- Focus returns to the textarea after a successful capture.
+- No focus is grabbed on arrival; the textarea is focused only after a successful
+  capture, so switching tabs does not open the keyboard or shift the layout.
 - Saved/error status in `aria-live="polite"`.
 - No color-only signaling; contrast meets WCAG AA on both themes.
 - Respect `prefers-reduced-motion` (spinner is the only motion).

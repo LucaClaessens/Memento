@@ -26,27 +26,3 @@ export function isKeyboardOpen(
   const shrink = windowHeight - viewportHeight;
   return shrink > 120 && viewportHeight < windowHeight * 0.8;
 }
-
-export const BRAND = "Memento";
-
-/** Edit this list to change the greeting copy or its time boundaries. */
-export const greetingBands = [
-  { untilHour: 12, text: "good morning." },
-  { untilHour: 18, text: "good afternoon." },
-  { untilHour: 24, text: "good evening." },
-] as const;
-
-export function greetingFor(date: Date): string {
-  const hour = date.getHours();
-  return (
-    greetingBands.find((band) => hour < band.untilHour)?.text ??
-    greetingBands[greetingBands.length - 1].text
-  );
-}
-
-/** Fixed locale so server and client render the same date string. */
-export const longDateFormatter = new Intl.DateTimeFormat("en-US", {
-  weekday: "long",
-  month: "long",
-  day: "numeric",
-});

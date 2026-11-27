@@ -1,13 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  BRAND,
-  greetingBands,
-  greetingFor,
-  isKeyboardOpen,
-  isTabActive,
-  longDateFormatter,
-  tabs,
-} from "./navigation";
+import { isKeyboardOpen, isTabActive, tabs } from "./navigation";
 
 describe("tabs", () => {
   it("exposes exactly the two settled destinations", () => {
@@ -15,7 +7,6 @@ describe("tabs", () => {
       ["/", "Write"],
       ["/thoughts", "Thoughts"],
     ]);
-    expect(BRAND).toBe("Memento");
   });
 
   it("matches the root only on the root route", () => {
@@ -32,27 +23,6 @@ describe("tabs", () => {
   });
 });
 
-describe("greetingFor", () => {
-  it("uses the morning greeting before noon", () => {
-    expect(greetingFor(new Date(2026, 10, 27, 8, 12))).toBe("good morning.");
-  });
-
-  it("uses the afternoon greeting until 18:00", () => {
-    expect(greetingFor(new Date(2026, 10, 27, 14, 0))).toBe("good afternoon.");
-    expect(greetingFor(new Date(2026, 10, 27, 17, 59))).toBe("good afternoon.");
-  });
-
-  it("uses the evening greeting from 18:00 onward", () => {
-    expect(greetingFor(new Date(2026, 10, 27, 18, 0))).toBe("good evening.");
-    expect(greetingFor(new Date(2026, 10, 27, 23, 59))).toBe("good evening.");
-  });
-
-  it("has three editable bands covering the whole day", () => {
-    expect(greetingBands).toHaveLength(3);
-    expect(greetingBands[2].untilHour).toBe(24);
-  });
-});
-
 describe("isKeyboardOpen", () => {
   it("is false when the viewport is unchanged", () => {
     expect(isKeyboardOpen(800, 800)).toBe(false);
@@ -64,13 +34,5 @@ describe("isKeyboardOpen", () => {
 
   it("is true when the keyboard takes a large share of the viewport", () => {
     expect(isKeyboardOpen(800, 420)).toBe(true);
-  });
-});
-
-describe("longDateFormatter", () => {
-  it("formats the date line agreed in the design", () => {
-    expect(longDateFormatter.format(new Date(2026, 10, 27, 12, 0))).toBe(
-      "Friday, November 27"
-    );
   });
 });

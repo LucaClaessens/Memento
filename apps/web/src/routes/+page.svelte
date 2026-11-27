@@ -1,11 +1,9 @@
 <script lang="ts">
   import { MAX_ENTRY_LENGTH } from "@memento/shared";
-  import { onMount } from "svelte";
   import * as Alert from "$lib/components/ui/alert";
   import { Button } from "$lib/components/ui/button";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
-  import WriteGreeting from "$lib/components/write-greeting.svelte";
   import { entries } from "$lib/stores/entries.svelte";
 
   let text = $state("");
@@ -41,10 +39,6 @@
       void submit();
     }
   }
-
-  onMount(() => {
-    textareaRef?.focus();
-  });
 </script>
 
 <svelte:head>
@@ -55,8 +49,6 @@
   <div
     class="mx-auto flex w-full max-w-[720px] min-h-0 flex-1 flex-col px-4 md:px-0"
   >
-    <WriteGreeting />
-
     <!-- Reserved prompt slot (empty in v1). -->
     <div class="min-h-0 shrink-0" aria-hidden="true" data-slot="prompt"></div>
 
@@ -66,7 +58,7 @@
         bind:value={text}
         aria-label="Capture a thought"
         placeholder="What's on your mind?"
-        class="min-h-0 flex-1 resize-none border-0 bg-transparent px-0 py-4 text-lg leading-[1.6] shadow-none focus-visible:ring-0 md:py-6"
+        class="min-h-0 flex-1 resize-none border-0 bg-transparent px-0 pt-8 pb-4 text-2xl leading-[1.45] shadow-none focus-visible:ring-0 md:pt-12 md:pb-6 md:text-[1.75rem]"
         disabled={entries.submitting}
         onkeydown={handleKeydown}
       />
