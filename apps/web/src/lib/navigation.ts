@@ -1,12 +1,17 @@
 export type TabIcon = "pen" | "notebook";
 
+export type TabHref = "/" | "/thoughts";
+
 export interface NavigationTab {
-  href: string;
+  href: TabHref;
   label: string;
   icon: TabIcon;
 }
 
-/** Primary destinations in display order. Add tabs here as features land. */
+/**
+ * Primary destinations in display order. To add a tab, add its route to
+ * `TabHref`, then add the tab here.
+ */
 export const tabs: ReadonlyArray<NavigationTab> = [
   { href: "/", label: "Write", icon: "pen" },
   { href: "/thoughts", label: "Thoughts", icon: "notebook" },

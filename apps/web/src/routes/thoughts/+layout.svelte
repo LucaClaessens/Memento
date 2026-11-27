@@ -14,7 +14,6 @@
   let { children }: { children: Snippet } = $props();
 
   let scrolled = $state(false);
-  let scrollEl: HTMLElement | null = $state(null);
 
   const isOpen = $derived(thoughtOverlay.activeId !== null);
   // The bar returns to its list state as soon as the close starts, so the
@@ -30,12 +29,6 @@
 
   onMount(() => {
     void entries.load();
-    const el = scrollEl;
-    const onScroll = () => {
-      scrolled = (el?.scrollTop ?? 0) > 40;
-    };
-    el?.addEventListener("scroll", onScroll, { passive: true });
-    return () => el?.removeEventListener("scroll", onScroll);
   });
 
   // When the card finishes closing, leave the detail route.
@@ -52,8 +45,16 @@
 <div class="flex h-full min-h-0 flex-col bg-background text-foreground">
   <main
     data-scroll-container
-    bind:this={scrollEl}
     class="mx-auto w-full max-w-[720px] min-h-0 flex-1 overflow-y-auto px-4 pb-8 [overflow-anchor:none] md:px-0"
+    {@attach (node) => {
+      const onScroll = () => {
+        scrolled = node.scrollTop > 40;
+      };
+      // A restored scroll position arrives without a scroll event.
+      scrolled = node.scrollTop > 40;
+      node.addEventListener("scroll", onScroll, { passive: true });
+      return () => node.removeEventListener("scroll", onScroll);
+    }}
   >
     <ThoughtsHeader
       small={scrolled || headerOpen}

@@ -14,7 +14,7 @@
   }: Props = $props();
 </script>
 
-<header class="thoughts-header" class:small class:back class:scrolled>
+<header class={["thoughts-header", { small, back, scrolled }]}>
   <div class="topbar-gradient" aria-hidden="true"></div>
   <button
     type="button"
