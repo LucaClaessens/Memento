@@ -25,7 +25,7 @@
   class="shrink-0 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
 >
   <div
-    class="mx-auto flex w-full max-w-[28rem] items-stretch gap-1 rounded-full border border-border bg-card/95 p-1.5 shadow-lg backdrop-blur"
+    class="mx-auto flex w-full max-w-[28rem] items-stretch gap-1 rounded-full bg-card/95 p-1.5 shadow-lg ring-1 ring-border/60 backdrop-blur"
   >
     {#each tabs as tab (tab.href)}
       {@const active = isTabActive(pathname, tab.href)}
@@ -35,7 +35,7 @@
         aria-current={active ? "page" : undefined}
         onclick={(event) => handleClick(event, tab.href)}
         class={cn(
-          "flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-3 py-1.5 text-[0.68rem] font-medium transition-colors",
+          "flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
           active
             ? "bg-primary text-primary-foreground"
