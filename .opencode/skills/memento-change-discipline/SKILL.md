@@ -95,16 +95,16 @@ and the reviewer advises.
 
 ## Validation matrix
 
-| Change                             | Minimum validation                                                        |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| Executable source (api/web/shared) | Proof of changed behavior; typecheck + lint come from the pre-commit gate |
-| Shared schema / zod contract       | Typecheck consumers (web + api) + tests                                   |
-| Database migration or repository   | Repository tests against `:memory:` SQLite + migration tests              |
-| API route                          | Route tests + typecheck                                                   |
-| Web UI / component                 | Run it (`pnpm dev:web` / `pnpm dev:api`) and look; browser check          |
-| Persisted or external contract     | Compatibility/round-trip tests                                            |
-| Dependency or lockfile             | Workspace-wide checks + affected builds                                   |
-| Generated asset                    | Regeneration check + consumer build/test                                  |
+| Change                             | Minimum validation                                                                                                                      |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Executable source (api/web/shared) | Proof of changed behavior; typecheck + lint come from the pre-commit gate                                                               |
+| Shared schema / zod contract       | Typecheck consumers (web + api) + tests                                                                                                 |
+| Database migration or repository   | Repository tests against `:memory:` SQLite + migration tests                                                                            |
+| API route                          | Route tests + typecheck                                                                                                                 |
+| Web UI / component                 | Run `svelte-autofixer` on changed `.svelte`/`.svelte.ts`/`.svelte.js`; run it (`pnpm dev:web` / `pnpm dev:api`) and look; browser check |
+| Persisted or external contract     | Compatibility/round-trip tests                                                                                                          |
+| Dependency or lockfile             | Workspace-wide checks + affected builds                                                                                                 |
+| Generated asset                    | Regeneration check + consumer build/test                                                                                                |
 
 Run `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm format:check`, `pnpm build`
 before claiming done (see AGENTS.md). TypeScript and lint do not cover server JS or

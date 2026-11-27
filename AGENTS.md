@@ -15,6 +15,8 @@ live in `~/.config/opencode/skills/` and are available in every session.
 - `test-design` — what earns a test, factory patterns, no module mocks / no source-text assertions.
 - `communication-style` — replies, docs, UI copy, PR/issue comments (Memento glossary discipline).
 - `memento-ui-guidance` — Memento's own visual language, depth, quiet at rest, stability, composition, density, phone rules, motion/continuity, state colors.
+- `svelte-core-bestpractices` — Svelte 5 runes, reactivity, events, styling, library integration (vendored in `.agents/skills/`).
+- `svelte-code-writer` — Svelte 5/SvelteKit docs lookup and `svelte-autofixer`; MUST run on any `.svelte`/`.svelte.ts`/`.svelte.js` edit (vendored in `.agents/skills/`).
 - `codebase-design` (Matt Pocock) — module/interface/depth/seam vocabulary; deletion test.
 - `grilling` / `grill-with-docs` (Matt Pocock) — decision trees; settle decisions before code.
 - `tdd` (Matt Pocock) — red-green-refactor.
