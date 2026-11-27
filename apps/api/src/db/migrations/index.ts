@@ -7,7 +7,10 @@ export interface Migration {
   up(db: Db): void;
 }
 
-export const migrations: Migration[] = [createEntries, addThreadsAndTitles];
+export const migrations: Array<Migration> = [
+  createEntries,
+  addThreadsAndTitles,
+];
 
 /** Applies each migration once, in order, recording it in `schema_migrations`. */
 export function runMigrations(db: Db): void {
@@ -29,7 +32,9 @@ export function runMigrations(db: Db): void {
   );
 
   for (const migration of migrations) {
-    if (applied.has(migration.id)) continue;
+    if (applied.has(migration.id)) {
+      continue;
+    }
 
     db.transaction(() => {
       migration.up(db);

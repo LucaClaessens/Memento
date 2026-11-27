@@ -1,4 +1,5 @@
-import { firstLineTitle, type Entry } from "@memento/shared";
+import { firstLineTitle } from "@memento/shared";
+import type { Entry } from "@memento/shared";
 
 export interface ThoughtDisplay {
   title: string;
@@ -18,16 +19,20 @@ export function thoughtSummary(
   entry: Pick<Entry, "summary" | "title" | "rawText">
 ): string | null {
   const stored = entry.summary?.trim();
-  if (stored) return stored;
+  if (stored) {
+    return stored;
+  }
 
   const lines = entry.rawText.split(/\r?\n/);
   const firstLineIndex = lines.findIndex((line) => line.trim().length > 0);
-  if (firstLineIndex === -1) return null;
+  if (firstLineIndex === -1) {
+    return null;
+  }
 
   const preview = lines
     .slice(firstLineIndex + 1)
     .join(" ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
 
   return preview || null;
@@ -51,7 +56,9 @@ export function splitThought(
 
   const lines = entry.rawText.split(/\r?\n/);
   const firstLineIndex = lines.findIndex((line) => line.trim().length > 0);
-  if (firstLineIndex === -1) return { title, body: "" };
+  if (firstLineIndex === -1) {
+    return { title, body: "" };
+  }
 
   return {
     title,
@@ -74,7 +81,9 @@ const formatterCache = new Map<string, DateFormatters>();
 function formatters(locale?: string): DateFormatters {
   const key = locale ?? "default";
   const cached = formatterCache.get(key);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
 
   const created: DateFormatters = {
     time: new Intl.DateTimeFormat(locale, {
@@ -109,12 +118,16 @@ export function formatThoughtDate(
   now: Date = new Date(),
   locale?: string
 ): string {
-  const date = createdAt instanceof Date ? createdAt : new Date(createdAt);
+  const date = typeof createdAt === "string" ? new Date(createdAt) : createdAt;
   const format = formatters(locale);
   const days = Math.round((startOfDay(now) - startOfDay(date)) / 86_400_000);
 
-  if (days === 0) return `Today · ${format.time.format(date)}`;
-  if (days === 1) return `Yesterday · ${format.time.format(date)}`;
+  if (days === 0) {
+    return `Today · ${format.time.format(date)}`;
+  }
+  if (days === 1) {
+    return `Yesterday · ${format.time.format(date)}`;
+  }
   if (date.getFullYear() === now.getFullYear()) {
     return format.shortDate.format(date);
   }

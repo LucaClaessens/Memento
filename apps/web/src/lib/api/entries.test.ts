@@ -1,6 +1,7 @@
 import type { Entry } from "@memento/shared";
 import { describe, expect, it, vi } from "vitest";
-import { ApiError, createApiClient, type FetchLike } from "./client";
+import { ApiError, createApiClient } from "./client";
+import type { FetchLike } from "./client";
 import { createEntriesApi } from "./entries";
 
 const entry: Entry = {
@@ -150,7 +151,7 @@ describe("entries API client", () => {
       throw new TypeError("Failed to fetch");
     });
 
-    const error = await api.list().catch((cause: unknown) => cause);
+    const error = await api.list().catch((error_: unknown) => error_);
 
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ code: "network_error", status: 0 });

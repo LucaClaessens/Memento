@@ -2,10 +2,11 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { createEntriesRepository, type NewEntry } from "./entries.js";
+import { createEntriesRepository } from "./entries.js";
+import type { NewEntry } from "./entries.js";
 import { openDatabase } from "./index.js";
 
-const tempDirs: string[] = [];
+const tempDirs: Array<string> = [];
 
 function tempDbPath(): string {
   const dir = mkdtempSync(join(tmpdir(), "memento-db-"));

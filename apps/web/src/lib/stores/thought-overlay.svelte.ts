@@ -21,8 +21,11 @@ export class ThoughtOverlayStore {
   }
 
   requestClose(): void {
-    if (this.closeHandler) this.closeHandler();
-    else this.finishClose();
+    if (this.closeHandler) {
+      this.closeHandler();
+    } else {
+      this.finishClose();
+    }
   }
 
   finishClose(): void {

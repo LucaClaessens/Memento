@@ -1,9 +1,5 @@
-import {
-  EntryListSchema,
-  EntrySchema,
-  type CreateEntry,
-  type Entry,
-} from "@memento/shared";
+import { EntryListSchema, EntrySchema } from "@memento/shared";
+import type { CreateEntry, Entry } from "@memento/shared";
 import type { ApiClient } from "./client";
 
 export function createEntriesApi(client: ApiClient) {
@@ -12,9 +8,11 @@ export function createEntriesApi(client: ApiClient) {
      * Newest first, as ordered by the API. Without a parentId the API returns
      * roots; with one it returns that entry's follow-ups.
      */
-    async list(limit = 50, parentId?: string): Promise<Entry[]> {
+    async list(limit = 50, parentId?: string): Promise<Array<Entry>> {
       const params = new URLSearchParams({ limit: String(limit) });
-      if (parentId) params.set("parentId", parentId);
+      if (parentId) {
+        params.set("parentId", parentId);
+      }
 
       const payload = await client.get(`/entries?${params.toString()}`);
       return EntryListSchema.parse(payload).entries;
@@ -34,11 +32,15 @@ export function createEntriesApi(client: ApiClient) {
       const form = new FormData();
       form.append("audio", file, "recording.webm");
       const payload = await client.postForm("/transcribe", form, signal);
-      const rawText = (payload as { rawText?: unknown }).rawText;
-      if (typeof rawText !== "string") {
+      if (
+        typeof payload !== "object" ||
+        payload === null ||
+        !("rawText" in payload) ||
+        typeof payload.rawText !== "string"
+      ) {
         throw new Error("Invalid transcription response");
       }
-      return rawText;
+      return payload.rawText;
     },
   };
 }

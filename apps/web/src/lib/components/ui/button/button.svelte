@@ -1,6 +1,8 @@
 <script lang="ts" module>
-  import { type VariantProps, tv } from "tailwind-variants";
-  import { cn, type WithElementRef } from "$lib/utils.js";
+  import { tv } from "tailwind-variants";
+  import type { VariantProps } from "tailwind-variants";
+  import { cn } from "$lib/utils.js";
+  import type { WithElementRef } from "$lib/utils.js";
   import type {
     HTMLAnchorAttributes,
     HTMLButtonAttributes,
@@ -70,7 +72,6 @@
     bind:this={ref}
     data-slot="button"
     class={cn(buttonVariants({ variant, size }), className)}
-    // eslint-disable-next-line svelte/no-navigation-without-resolve
     href={disabled ? undefined : href}
     aria-disabled={disabled}
     role={disabled ? "link" : undefined}

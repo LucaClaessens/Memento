@@ -7,14 +7,16 @@ export interface NavigationTab {
 }
 
 /** Primary destinations in display order. Add tabs here as features land. */
-export const tabs: readonly NavigationTab[] = [
+export const tabs: ReadonlyArray<NavigationTab> = [
   { href: "/", label: "Write", icon: "pen" },
   { href: "/thoughts", label: "Thoughts", icon: "notebook" },
 ];
 
 /** A non-root tab is active on its own route and any nested route. */
 export function isTabActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/";
+  if (href === "/") {
+    return pathname === "/";
+  }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

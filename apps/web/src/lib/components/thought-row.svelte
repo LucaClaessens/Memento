@@ -50,15 +50,19 @@
 
   const reduced = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const wait = (ms: number) =>
+    new Promise<void>((resolve) => {
+      setTimeout(resolve, ms);
+    });
+
+  function updateViewport(): void {
+    viewport = { width: window.innerWidth, height: window.innerHeight };
+  }
 
   onMount(() => {
-    const update = () => {
-      viewport = { width: window.innerWidth, height: window.innerHeight };
-    };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    updateViewport();
+    window.addEventListener("resize", updateViewport);
+    return () => window.removeEventListener("resize", updateViewport);
   });
 
   $effect(() => {
@@ -89,44 +93,55 @@
     if (active) {
       thoughtOverlay.closeHandler = () => void close();
       return () => {
-        if (thoughtOverlay.closeHandler) thoughtOverlay.closeHandler = null;
+        if (thoughtOverlay.closeHandler) {
+          thoughtOverlay.closeHandler = null;
+        }
       };
     }
   });
 
   // Keep Tab inside the card and its back control while the card is open.
-  $effect(() => {
-    if (!card) return;
-    const onKeydown = (event: KeyboardEvent) => {
-      if (event.key !== "Tab" || !el) return;
-      const back = document.querySelector<HTMLElement>("[data-thought-back]");
-      const focusables = [
-        ...(back ? [back] : []),
-        ...el.querySelectorAll<HTMLElement>(
-          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        ),
-      ];
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      const current = document.activeElement as HTMLElement | null;
-      const inside = current ? focusables.includes(current) : false;
-      if (event.shiftKey) {
-        if (!inside || current === first || current === el) {
-          event.preventDefault();
-          last.focus();
-        }
-      } else if (!inside || current === last) {
+  function trapTab(event: KeyboardEvent): void {
+    if (event.key !== "Tab" || !el) {
+      return;
+    }
+    const back = document.querySelector<HTMLElement>("[data-thought-back]");
+    const focusables = [
+      ...(back ? [back] : []),
+      ...el.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      ),
+    ];
+    if (focusables.length === 0) {
+      return;
+    }
+    const first = focusables[0];
+    const last = focusables.at(-1);
+    const current = document.activeElement as HTMLElement | null;
+    const inside = current ? focusables.includes(current) : false;
+    if (event.shiftKey) {
+      if (!inside || current === first || current === el) {
         event.preventDefault();
-        first.focus();
+        last?.focus();
       }
-    };
-    window.addEventListener("keydown", onKeydown);
-    return () => window.removeEventListener("keydown", onKeydown);
+    } else if (!inside || current === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  $effect(() => {
+    if (!card) {
+      return;
+    }
+    window.addEventListener("keydown", trapTab);
+    return () => window.removeEventListener("keydown", trapTab);
   });
 
   async function close(): Promise<void> {
-    if (closing) return;
+    if (closing) {
+      return;
+    }
     closing = true;
     thoughtOverlay.closing = true;
     thoughtOverlay.setPush(0, 0);
@@ -134,7 +149,9 @@
     // Shrink the title and the card together so the title does not lag behind.
     titleLarge = false;
     grown = false;
-    if (!reduced()) await wait(380);
+    if (!reduced()) {
+      await wait(380);
+    }
     card = false;
     closing = false;
     onclosed?.();

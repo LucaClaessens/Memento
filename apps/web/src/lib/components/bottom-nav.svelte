@@ -13,13 +13,15 @@
   );
 
   let container: HTMLDivElement | null = $state(null);
-  let tabEls: HTMLElement[] = $state([]);
+  let tabEls: Array<HTMLElement> = $state([]);
   let indicator = $state({ x: 0, width: 0 });
   let ready = $state(false);
 
   $effect(() => {
     const el = tabEls[activeIndex];
-    if (!el || !container) return;
+    if (!el || !container) {
+      return;
+    }
     const containerRect = container.getBoundingClientRect();
     const rect = el.getBoundingClientRect();
     indicator = {
@@ -31,20 +33,25 @@
     }
   });
 
+  function remeasure(): void {
+    const el = tabEls[activeIndex];
+    if (!el || !container) {
+      return;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    indicator = { x: rect.left - containerRect.left, width: rect.width };
+  }
+
   $effect(() => {
-    const remeasure = () => {
-      const el = tabEls[activeIndex];
-      if (!el || !container) return;
-      const containerRect = container.getBoundingClientRect();
-      const rect = el.getBoundingClientRect();
-      indicator = { x: rect.left - containerRect.left, width: rect.width };
-    };
     window.addEventListener("resize", remeasure);
     return () => window.removeEventListener("resize", remeasure);
   });
 
   function handleClick(event: MouseEvent, href: string): void {
-    if (!isTabActive(pathname, href)) return;
+    if (!isTabActive(pathname, href)) {
+      return;
+    }
 
     event.preventDefault();
     document

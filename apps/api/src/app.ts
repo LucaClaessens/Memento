@@ -10,7 +10,7 @@ export const DEFAULT_WEB_ORIGINS = [
   "http://127.0.0.1:5173",
 ];
 
-export function parseOrigins(value: string | undefined): string[] {
+export function parseOrigins(value: string | undefined): Array<string> {
   const origins = (value ?? "")
     .split(",")
     .map((origin) => origin.trim())
@@ -21,7 +21,7 @@ export function parseOrigins(value: string | undefined): string[] {
 
 export interface AppOptions {
   db: Db;
-  allowedOrigins?: string[];
+  allowedOrigins?: Array<string>;
 }
 
 export function createApp({ db, allowedOrigins }: AppOptions): Hono {

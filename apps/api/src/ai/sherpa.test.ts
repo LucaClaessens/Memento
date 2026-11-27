@@ -13,7 +13,7 @@ describe("recognizerConfig", () => {
       };
     };
 
-    expect(config.featConfig).toEqual({ sampleRate: 16000, featureDim: 80 });
+    expect(config.featConfig).toEqual({ sampleRate: 16_000, featureDim: 80 });
     expect(config.modelConfig.transducer).toEqual({
       encoder: "/models/parakeet-tdt-0.6b-v3/encoder.int8.onnx",
       decoder: "/models/parakeet-tdt-0.6b-v3/decoder.int8.onnx",

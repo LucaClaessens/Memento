@@ -1,4 +1,5 @@
-import { firstLineTitle, type Entry } from "@memento/shared";
+import { firstLineTitle } from "@memento/shared";
+import type { Entry } from "@memento/shared";
 import type { Db } from "./types.js";
 
 export interface NewEntry {
@@ -102,7 +103,7 @@ export function createEntriesRepository(db: Db) {
      * Newest first, ties broken by id, so paging is stable.
      * Without a parentId it lists roots; with one it lists that entry's children.
      */
-    list(limit: number, parentId: string | null = null): Entry[] {
+    list(limit: number, parentId: string | null = null): Array<Entry> {
       return parentId
         ? childrenNewestFirst.all(parentId, limit).map(toEntry)
         : rootsNewestFirst.all(limit).map(toEntry);

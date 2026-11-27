@@ -23,8 +23,11 @@ async function convertToWav(
     });
     proc.on("error", reject);
     proc.on("close", (code) => {
-      if (code === 0) resolve();
-      else reject(new Error(`ffmpeg exited ${code}: ${stderr.trim()}`));
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`ffmpeg exited ${code}: ${stderr.trim()}`));
+      }
     });
   });
 }

@@ -71,7 +71,7 @@ Enforcement:
 
 Hooks are fast by design; CI is the gate.
 
-- `pre-commit`: runs `lint-staged` — Prettier (write) on all staged files, ESLint
+- `pre-commit`: runs `lint-staged` — Prettier (write) on all staged files, oxlint
   (`--fix`) on staged `*.ts`/`*.svelte`/`*.js`.
 - `commit-msg`: runs `commitlint` on the commit message.
 - There is no `pre-push` hook. Run `pnpm typecheck` and `pnpm test` locally before
@@ -87,7 +87,8 @@ pnpm install   # runs the `prepare` script (Husky)
 
 - Formatting: Prettier (config in `.prettierrc`). Run `pnpm format` to format,
   `pnpm format:check` to verify.
-- Linting: ESLint (root `eslint.config.js`). Run `pnpm lint`.
+- Linting: oxlint with `@cloudflare/oxlint-config` (root `oxlint.config.ts`). Run `pnpm lint`.
+  Requires Node 22.18+ so the TypeScript config loads without flags.
 - Type checking: `pnpm typecheck`.
 - Tests: Vitest. Run `pnpm test`.
 

@@ -1,8 +1,9 @@
-import { fork, type ChildProcess } from "node:child_process";
+import { fork } from "node:child_process";
+import type { ChildProcess } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 
-const isDev = fileURLToPath(import.meta.url).includes("/src/");
+const isDev = import.meta.filename.includes("/src/");
 const workerUrl = new URL(
   isDev ? "./transcriber-worker.ts" : "./transcriber-worker.js",
   import.meta.url
@@ -52,16 +53,25 @@ export function createTranscriber() {
       return;
     }
     const entry = pending.get(message.id);
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     clearTimeout(entry.timer);
     pending.delete(message.id);
-    if (message.error) entry.reject(new Error(message.error));
-    else entry.resolve(message.text ?? "");
+    if (message.error) {
+      entry.reject(new Error(message.error));
+    } else {
+      entry.resolve(message.text ?? "");
+    }
   }
 
   function start(): Promise<void> {
-    if (ready && child && !child.killed) return Promise.resolve();
-    if (startPromise) return startPromise;
+    if (ready && child && !child.killed) {
+      return Promise.resolve();
+    }
+    if (startPromise) {
+      return startPromise;
+    }
 
     startPromise = new Promise<void>((resolve, reject) => {
       const env = {
@@ -94,7 +104,9 @@ export function createTranscriber() {
       proc.on("exit", () => {
         proc.off("message", onReady);
         ready = false;
-        if (child === proc) child = null;
+        if (child === proc) {
+          child = null;
+        }
         failAll("Transcriber worker exited");
       });
       proc.on("error", (err) => {
@@ -111,7 +123,9 @@ export function createTranscriber() {
   return {
     start,
     stop(): void {
-      if (child && !child.killed) child.kill();
+      if (child && !child.killed) {
+        child.kill();
+      }
       child = null;
       ready = false;
       failAll("Transcriber stopped");
@@ -126,6 +140,7 @@ export function createTranscriber() {
         throw new TranscriberUnavailableError();
       }
 
+      const proc = child;
       const id = randomUUID();
       return new Promise<string>((resolve, reject) => {
         const timer = setTimeout(() => {
@@ -133,7 +148,7 @@ export function createTranscriber() {
           reject(new Error("Transcription timed out"));
         }, REQUEST_TIMEOUT_MS);
         pending.set(id, { resolve, reject, timer });
-        child!.send({ id, wavPath });
+        proc.send({ id, wavPath });
       });
     },
   };

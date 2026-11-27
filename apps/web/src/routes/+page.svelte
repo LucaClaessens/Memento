@@ -22,12 +22,12 @@
   let elapsed = $state(0);
   let timer: ReturnType<typeof setInterval> | null = null;
   let mediaRecorder: MediaRecorder | null = null;
-  let chunks: Blob[] = [];
+  let chunks: Array<Blob> = [];
   let audioContext: AudioContext | null = null;
   let analyser = $state.raw<AnalyserNode | null>(null);
 
   const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
-  const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1_000);
+  const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1000);
   const canSubmit = $derived(
     text.trim().length > 0 && !tooLong && !entries.submitting
   );
@@ -52,14 +52,16 @@
       mediaRecorder = new MediaRecorder(stream);
       chunks = [];
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
       };
       mediaRecorder.start();
       recording = true;
       elapsed = 0;
       timer = setInterval(() => {
         elapsed += 1;
-      }, 1_000);
+      }, 1000);
     } catch {
       entries.submitError = "Microphone access denied.";
     }
@@ -84,7 +86,9 @@
   }
 
   async function acceptRecording(): Promise<void> {
-    if (!mediaRecorder) return;
+    if (!mediaRecorder) {
+      return;
+    }
     const rec = mediaRecorder;
     const blobPromise = new Promise<Blob>((resolve) => {
       rec.onstop = () => {
@@ -109,8 +113,8 @@
         transcribeController.signal
       );
       text = text.trim() ? `${text.trim()} ${transcript}` : transcript;
-    } catch (err) {
-      if ((err as Error).name !== "AbortError") {
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") {
         entries.submitError = "Couldn’t transcribe the recording.";
       }
     } finally {
@@ -120,7 +124,9 @@
   }
 
   async function submit(): Promise<void> {
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      return;
+    }
 
     const captured = await entries.capture(text);
     if (captured) {

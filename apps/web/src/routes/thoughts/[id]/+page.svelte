@@ -14,7 +14,9 @@
 
   $effect(() => {
     const currentId = id;
-    if (!currentId) return;
+    if (!currentId) {
+      return;
+    }
     thoughtOverlay.open(currentId);
     if (thoughtDetail.thought?.id !== currentId) {
       void thoughtDetail.load(currentId);

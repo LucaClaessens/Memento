@@ -9,7 +9,7 @@ function chronological(a: Entry, b: Entry): number {
 
 export class ThoughtDetailStore {
   thought = $state<Entry | null>(null);
-  followUps = $state<Entry[]>([]);
+  followUps = $state<Array<Entry>>([]);
   loading = $state(false);
   loadError = $state<string | null>(null);
   notFound = $state(false);
@@ -20,7 +20,9 @@ export class ThoughtDetailStore {
   #loadedId: string | null = null;
 
   async load(id: string): Promise<void> {
-    if (this.#loadedId === id && !this.loadError) return;
+    if (this.#loadedId === id && !this.loadError) {
+      return;
+    }
 
     const request = ++this.#request;
     this.loading = true;
@@ -34,13 +36,17 @@ export class ThoughtDetailStore {
         entriesApi.get(id),
         entriesApi.list(50, id),
       ]);
-      if (request !== this.#request) return;
+      if (request !== this.#request) {
+        return;
+      }
 
       this.thought = thought;
       this.followUps = [...children].sort(chronological);
       this.#loadedId = id;
     } catch (error) {
-      if (request !== this.#request) return;
+      if (request !== this.#request) {
+        return;
+      }
 
       if (error instanceof ApiError && error.status === 404) {
         this.notFound = true;
@@ -49,12 +55,16 @@ export class ThoughtDetailStore {
           "Couldn’t load this thought. Check that the Memento API is running.";
       }
     } finally {
-      if (request === this.#request) this.loading = false;
+      if (request === this.#request) {
+        this.loading = false;
+      }
     }
   }
 
   async addFollowUp(parentId: string, rawText: string): Promise<boolean> {
-    if (this.submitting) return false;
+    if (this.submitting) {
+      return false;
+    }
 
     this.submitting = true;
     this.submitError = null;

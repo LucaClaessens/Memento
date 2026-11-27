@@ -9,7 +9,9 @@ export class NavigationStore {
 
   attach(): () => void {
     const viewport = window.visualViewport;
-    if (!viewport) return () => {};
+    if (!viewport) {
+      return () => {};
+    }
 
     const update = (): void => {
       this.keyboardOpen = isKeyboardOpen(window.innerHeight, viewport.height);

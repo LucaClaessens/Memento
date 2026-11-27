@@ -3,6 +3,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
+import { errorMessage } from "../errors.js";
 import { transcribeAudio } from "../services/transcription.js";
 import { TranscriberUnavailableError } from "../ai/transcriber.js";
 
@@ -15,7 +16,7 @@ export function transcription(): Hono {
       return c.json({ error: "invalid_content_type" }, 415);
     }
 
-    let body: Record<string, unknown>;
+    let body: Record<string, string | File>;
     try {
       body = await c.req.parseBody();
     } catch {
@@ -38,12 +39,12 @@ export function transcription(): Hono {
     try {
       const rawText = await transcribeAudio(path);
       return c.json({ rawText });
-    } catch (err) {
-      if (err instanceof TranscriberUnavailableError) {
+    } catch (error) {
+      if (error instanceof TranscriberUnavailableError) {
         return c.json({ error: "transcriber_unavailable" }, 503);
       }
       return c.json(
-        { error: "transcription_failed", message: (err as Error).message },
+        { error: "transcription_failed", message: errorMessage(error) },
         500
       );
     } finally {

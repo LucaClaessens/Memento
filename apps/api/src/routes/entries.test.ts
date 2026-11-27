@@ -1,4 +1,5 @@
-import { EntryListSchema, EntrySchema, type Entry } from "@memento/shared";
+import { EntryListSchema, EntrySchema } from "@memento/shared";
+import type { Entry } from "@memento/shared";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../app.js";
 import { openDatabase } from "../db/index.js";
