@@ -32,7 +32,7 @@ export function thoughtSummary(
   const preview = lines
     .slice(firstLineIndex + 1)
     .join(" ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
 
   return preview || null;
