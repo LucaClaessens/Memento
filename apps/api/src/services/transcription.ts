@@ -1,15 +1,13 @@
 import { spawn } from "node:child_process";
-import { rm, unlink } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
-import { createEntriesRepository } from "../db/entries.js";
-import type { Db } from "../db/types.js";
 import { transcribe } from "../ai/transcribe.js";
 
 const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
 
-export async function convertToWav(
+async function convertToWav(
   inputPath: string,
   outputPath: string
 ): Promise<void> {
@@ -31,36 +29,12 @@ export async function convertToWav(
   });
 }
 
-export async function runTranscription(
-  db: Db,
-  entryId: string,
-  audioDir: string
-): Promise<void> {
-  const repo = createEntriesRepository(db);
-  const entry = repo.get(entryId);
-  if (!entry || !entry.audioPath) return;
-
-  const audioPath = join(audioDir, entry.audioPath);
+/** Convert an uploaded audio blob to WAV and transcribe it locally. */
+export async function transcribeAudio(inputPath: string): Promise<string> {
   const wavPath = join(tmpdir(), `memento-${randomUUID()}.wav`);
-
   try {
-    await convertToWav(audioPath, wavPath);
-    const text = await transcribe(wavPath);
-    if (!text.trim()) {
-      throw new Error("empty transcript");
-    }
-    repo.updateTranscription(entryId, "done", text, null);
-    // Delete audio on success.
-    try {
-      await unlink(audioPath);
-    } catch {
-      // ignore
-    }
-    repo.setAudioPath(entryId, null);
-  } catch (err) {
-    repo.updateTranscription(entryId, "failed", undefined, undefined);
-    // keep audio for retry
-    void err;
+    await convertToWav(inputPath, wavPath);
+    return await transcribe(wavPath);
   } finally {
     await rm(wavPath, { force: true }).catch(() => undefined);
   }

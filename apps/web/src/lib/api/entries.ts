@@ -30,25 +30,15 @@ export function createEntriesApi(client: ApiClient) {
       return EntrySchema.parse(payload);
     },
 
-    async createVoice(
-      file: Blob,
-      opts: { id?: string; createdAt?: string; parentId?: string } = {}
-    ): Promise<Entry> {
+    async transcribeAudio(file: Blob, signal?: AbortSignal): Promise<string> {
       const form = new FormData();
       form.append("audio", file, "recording.webm");
-      if (opts.id) form.append("id", opts.id);
-      if (opts.createdAt) form.append("createdAt", opts.createdAt);
-      if (opts.parentId) form.append("parentId", opts.parentId);
-      const payload = await client.postForm("/entries/voice", form);
-      return EntrySchema.parse(payload);
-    },
-
-    async transcribe(id: string): Promise<Entry> {
-      const payload = await client.post(
-        `/entries/${encodeURIComponent(id)}/transcribe`,
-        {}
-      );
-      return EntrySchema.parse(payload);
+      const payload = await client.postForm("/transcribe", form, signal);
+      const rawText = (payload as { rawText?: unknown }).rawText;
+      if (typeof rawText !== "string") {
+        throw new Error("Invalid transcription response");
+      }
+      return rawText;
     },
   };
 }

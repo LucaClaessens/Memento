@@ -5,6 +5,7 @@
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
   import { entries } from "$lib/stores/entries.svelte";
+  import { entriesApi } from "$lib/api";
   import MicIcon from "@lucide/svelte/icons/mic";
 
   import SendIcon from "@lucide/svelte/icons/send";
@@ -15,6 +16,8 @@
   let textareaRef: HTMLTextAreaElement | null = $state(null);
   let announcement = $state("");
   let recording = $state(false);
+  let transcribing = $state(false);
+  let transcribeController: AbortController | null = null;
   let elapsed = $state(0);
   let timer: ReturnType<typeof setInterval> | null = null;
   let mediaRecorder: MediaRecorder | null = null;
@@ -72,6 +75,9 @@
   }
 
   function cancelRecording(): void {
+    transcribeController?.abort();
+    transcribeController = null;
+    transcribing = false;
     if (mediaRecorder && recording) {
       mediaRecorder.onstop = null;
       mediaRecorder.stop();
@@ -106,7 +112,22 @@
     stopTimer();
     elapsed = 0;
     waveLevels = Array(24).fill(0);
-    await entries.captureVoice(blob);
+    transcribing = true;
+    transcribeController = new AbortController();
+    try {
+      const transcript = await entriesApi.transcribeAudio(
+        blob,
+        transcribeController.signal
+      );
+      text = text.trim() ? `${text.trim()} ${transcript}` : transcript;
+    } catch (err) {
+      if ((err as Error).name !== "AbortError") {
+        entries.submitError = "Couldn’t transcribe the recording.";
+      }
+    } finally {
+      transcribing = false;
+      transcribeController = null;
+    }
   }
 
   async function submit(): Promise<void> {
@@ -216,6 +237,24 @@
           onclick={() => void acceptRecording()}
         >
           <CheckIcon class="size-4" />
+        </button>
+      {:else if transcribing}
+        <div
+          class="size-10 shrink-0 rounded-full border border-border flex items-center justify-center"
+          aria-label="Transcribing"
+        >
+          <Spinner class="size-5" />
+        </div>
+        <span class="flex-1 text-center text-xs text-muted-foreground">
+          Transcribing…
+        </span>
+        <button
+          type="button"
+          class="size-9 shrink-0 rounded-full border border-border flex items-center justify-center text-muted-foreground"
+          aria-label="Cancel transcription"
+          onclick={() => cancelRecording()}
+        >
+          <XIcon class="size-4" />
         </button>
       {:else}
         <button
