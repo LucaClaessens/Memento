@@ -14,6 +14,7 @@ live in `~/.config/opencode/skills/` and are available in every session.
 - `memento-change-discipline` — smallest complete change, proof, review findings, validation matrix.
 - `test-design` — what earns a test, factory patterns, no module mocks / no source-text assertions.
 - `communication-style` — replies, docs, UI copy, PR/issue comments (Memento glossary discipline).
+- `memento-ui-guidance` — Memento's own visual language, depth, quiet at rest, stability, composition, density, phone rules, motion/continuity, state colors.
 - `codebase-design` (Matt Pocock) — module/interface/depth/seam vocabulary; deletion test.
 - `grilling` / `grill-with-docs` (Matt Pocock) — decision trees; settle decisions before code.
 - `tdd` (Matt Pocock) — red-green-refactor.
