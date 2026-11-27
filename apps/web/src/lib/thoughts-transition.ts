@@ -36,6 +36,11 @@ export function cardTarget(viewport: {
   };
 }
 
+export interface PushDistances {
+  up: number;
+  down: number;
+}
+
 /**
  * How far the rows above and below must travel so their edge meets the card's
  * new edge. `up` equals the card's top travel, `down` its bottom travel.
@@ -43,7 +48,7 @@ export function cardTarget(viewport: {
 export function pushDistances(
   rect: Pick<Rect, "top" | "height">,
   viewportHeight: number
-): { up: number; down: number } {
+): PushDistances {
   return {
     up: Math.max(0, rect.top - THOUGHT_HEADER_HEIGHT),
     down: Math.max(0, viewportHeight - (rect.top + rect.height)),

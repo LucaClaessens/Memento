@@ -27,7 +27,7 @@ export function loadSherpa(): SherpaModule {
   return require("sherpa-onnx-node") as SherpaModule;
 }
 
-export function recognizerConfig(modelsDir: string, threads: number): unknown {
+export function recognizerConfig(modelsDir: string, threads: number) {
   const modelDir = `${modelsDir.replace(/\/$/, "")}/parakeet-tdt-0.6b-v3`;
   return {
     featConfig: { sampleRate: 16_000, featureDim: 80 },
