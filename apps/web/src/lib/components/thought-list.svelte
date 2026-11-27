@@ -71,7 +71,7 @@
   <ul class="flex flex-col" class:is-open={activeIndex !== -1}>
     {#each entries as entry, index (entry.id)}
       {@const pushed =
-        activeIndex === -1 || activeIndex === index
+        activeIndex === -1 || activeIndex === index || thoughtOverlay.closing
           ? null
           : index < activeIndex
             ? "up"

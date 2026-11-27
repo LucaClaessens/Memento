@@ -1,21 +1,27 @@
 <script lang="ts">
   interface Props {
     small?: boolean;
+    back?: boolean;
     scrolled?: boolean;
     onback?: () => void;
   }
 
-  let { small = false, scrolled = false, onback }: Props = $props();
+  let {
+    small = false,
+    back = false,
+    scrolled = false,
+    onback,
+  }: Props = $props();
 </script>
 
-<header class="thoughts-header" class:small class:scrolled>
+<header class="thoughts-header" class:small class:back class:scrolled>
   <div class="topbar-gradient" aria-hidden="true"></div>
   <button
     type="button"
     class="back-arrow"
     aria-label="Back to thoughts"
-    aria-hidden={!small}
-    tabindex={small ? 0 : -1}
+    aria-hidden={!back}
+    tabindex={back ? 0 : -1}
     onclick={onback}
   >
     ←
@@ -47,17 +53,17 @@
     opacity: 1;
   }
 
-  /* No line in the topbar — the title/arrow alone carry the state. */
+  /* No line in the topbar. The arrow aligns with the row content's left edge. */
   .back-arrow {
     position: absolute;
     top: 50%;
-    left: -0.9rem;
+    left: 0;
     z-index: 1;
     padding: 0;
     border: 0;
     background: none;
     color: var(--muted-foreground);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     line-height: 1;
     cursor: pointer;
     opacity: 0;
@@ -67,7 +73,7 @@
       transform 200ms var(--ease-out);
   }
 
-  .small .back-arrow {
+  .back .back-arrow {
     opacity: 1;
     transform: translate(0, -50%);
   }
@@ -78,12 +84,18 @@
     letter-spacing: -0.02em;
     line-height: 1.1;
     font-size: 2.25rem;
-    transition: font-size var(--m-dur-base) var(--ease-out);
+    transition:
+      font-size var(--m-dur-base) var(--ease-out),
+      margin-left var(--m-dur-base) var(--ease-out);
     width: fit-content;
   }
 
   .small .title {
     font-size: 1.125rem;
+  }
+
+  .back .title {
+    margin-left: 1.25rem;
   }
 
   @media (prefers-reduced-motion: reduce) {

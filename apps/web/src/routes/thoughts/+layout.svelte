@@ -45,6 +45,7 @@
   >
     <ThoughtsHeader
       small={scrolled || isOpen}
+      back={isOpen}
       scrolled={scrolled && !isOpen}
       onback={isOpen ? () => thoughtOverlay.requestClose() : undefined}
     />

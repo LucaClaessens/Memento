@@ -77,6 +77,7 @@
   async function close(): Promise<void> {
     if (closing) return;
     closing = true;
+    thoughtOverlay.closing = true;
     showDetail = false;
     if (!reduced()) await wait(180);
     grown = false;
@@ -188,13 +189,11 @@
   }
 
   a.pushed-up {
-    transform: translateY(-120px);
-    opacity: 0;
+    transform: translateY(-100vh);
     pointer-events: none;
   }
   a.pushed-down {
-    transform: translateY(120px);
-    opacity: 0;
+    transform: translateY(100vh);
     pointer-events: none;
   }
 
