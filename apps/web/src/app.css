@@ -153,53 +153,14 @@
 :root {
   --m-dur-fast: 150ms;
   --m-dur-base: 250ms;
-  --m-dur-slow: 300ms;
+  --m-dur-expand: 380ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --spring-lite: cubic-bezier(0.22, 1.05, 0.36, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* Shared-element transition: thought title morphs list -> detail */
-::view-transition-group(row-title) {
-  animation-duration: var(--m-dur-slow);
-  animation-timing-function: var(--spring-lite);
-}
-::view-transition-old(row-title) {
-  animation: 200ms ease-out both fade-out;
-}
-::view-transition-new(row-title) {
-  animation: 200ms ease-in both fade-in;
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(row-title) {
-    animation-duration: 1ms;
-  }
-  ::view-transition-old(row-title),
-  ::view-transition-new(row-title) {
-    animation-duration: 120ms;
-  }
-}
+/* Motion tokens are defined above for component use. The thoughts detail uses
+   an in-place expandable overlay (see expandable-thought.svelte), not view
+   transitions, so no view-transition pseudo-element rules are needed. */
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(row-title) {

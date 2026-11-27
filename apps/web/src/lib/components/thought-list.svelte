@@ -5,6 +5,7 @@
   import * as Empty from "$lib/components/ui/empty";
   import { Skeleton } from "$lib/components/ui/skeleton";
   import ThoughtRow from "./thought-row.svelte";
+  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
 
   interface Props {
     entries: Entry[];
@@ -16,6 +17,9 @@
   let { entries, loading = false, error = null, onRetry }: Props = $props();
 
   const now = new Date();
+  const activeIndex = $derived(
+    entries.findIndex((entry) => entry.id === thoughtOverlay.activeId)
+  );
 </script>
 
 {#if loading && entries.length === 0}
@@ -64,11 +68,29 @@
     </Alert.Root>
   {/if}
 
-  <ul class="flex flex-col">
-    {#each entries as entry (entry.id)}
+  <ul class="flex flex-col" class:is-open={activeIndex !== -1}>
+    {#each entries as entry, index (entry.id)}
+      {@const pushed =
+        activeIndex === -1 || activeIndex === index
+          ? null
+          : index < activeIndex
+            ? "up"
+            : "down"}
       <li class="border-t border-border first:border-t-0">
-        <ThoughtRow {entry} {now} />
+        <ThoughtRow
+          {entry}
+          {now}
+          active={thoughtOverlay.activeId === entry.id}
+          {pushed}
+          onclosed={() => thoughtOverlay.finishClose()}
+        />
       </li>
     {/each}
   </ul>
 {/if}
+
+<style>
+  .is-open > :global(li) {
+    border-color: transparent;
+  }
+</style>

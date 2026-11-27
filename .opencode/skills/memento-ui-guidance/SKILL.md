@@ -132,42 +132,44 @@ thing.
 **Rule: animate only `transform` and `opacity`.** Geometry triggers layout; non-composited
 properties recalculate style continuously.
 
-- **Reduced motion first.** Under `prefers-reduced-motion: reduce`, disable morphs,
-  springs, and parallax; keep short opacity fades (or instant). Never disable state
-  feedback (focus, loading).
-- **Continuity via shared-element transition.** The primary identity (title) morphs
-  between list and detail instead of disappearing, using the View Transitions API. Use
-  SvelteKit's `onNavigate` + `document.startViewTransition` (or `sveltekit-view-transition`)
-  to offload. Name only the pair that morphs; assign the name dynamically to the tapped
-  item before the transition and clean up after.
-- **Duration ~300ms** for the morph; past ~400ms it feels like waiting. Text cross-fades
-  at natural size (shorter, ~200ms) so it doesn't stretch/blur. Root cross-fade off.
-- **Easing:** slight spring-lite `cubic-bezier(0.22, 1.05, 0.36, 1)` for the morph;
-  `cubic-bezier(0.22, 1, 0.36, 1)` (ease-out) for entrances. Exits shorter, ease-in.
-  Avoid heavy overshoot (reads as playful, not calm).
-- **Nest parts** under a container (`view-transition-group: contain`) to avoid the
-  "shattered morph"; text cross-fades rather than scales.
-- **Preserve scroll position:** restore scroll inside the update callback before the
-  after-snapshot, so back-navigation lands where the user was.
-- **Fallback:** if no `startViewTransition` or reduced motion, just apply the state change.
-  No polyfill.
-- **Focus:** shift focus to the new heading/container after the transition resolves.
-- **Name the minimum:** every extra name is another group to reconcile.
-- **Clean up** temporary `view-transition-name` values after `finished` resolves.
-- **Scroll-aware title:** list page titles shrink on scroll and gain a gradient backdrop
-  (solid → transparent) so content scrolls under; keep the title in flow (no fixed bar)
-  to avoid layout shift.
-- **Overlay backdrop gradient rule:** any surface floating over scrolling content (title
-  bar, sticky headers, bottom nav, popovers) uses a gradient backdrop; modal/bottom-sheet
-  scrims use a dim scrim instead. Two distinct treatments, never mixed.
+- **Reduced motion first.** Under `prefers-reduced-motion: reduce`, disable the expand,
+  morphs, springs, and parallax; keep short opacity fades (or instant). Never disable
+  state feedback (focus, loading).
+- **Continuity via an expandable card, not a page swap.** The tapped list row grows in
+  place to fullscreen; the rows around it move aside and fade; the new detail content
+  fades in once the card is fullscreen. The row's title grows with the card from list
+  size to detail size, so the eye follows the same object. Do not use the View Transitions
+  API for this; keep the list mounted (SvelteKit layout) and drive an overlay component.
+- **Top bar stays put.** The list header remains; no divider line. On open the title
+  drops to its small (scrolled) size and a back arrow fades in to its left without
+  shifting the title. The top bar has a fixed height (56px) so the card target never
+  moves during the animation.
+- **Geometry is allowed only for the expandable card.** It transitions `top`, `left`,
+  `width`, `height` from the row rect to the stage (`clamp to viewport`, below the top
+  bar). Everything else animates `transform`/`opacity`. Keep it to that one element and
+  ~380ms; do not animate layout for other surfaces.
+- **Easing:** `cubic-bezier(0.22, 1, 0.36, 1)` (ease-out) both ways so open and close
+  feel the same. Text fades at natural size (~200ms); no scaling that stretches text.
+- **Back symmetry:** the close animation is the open animation in reverse, same duration
+  and easing; the card returns to the exact original rect (clear inline geometry after),
+  and the list lands where the user left it.
+- **Focus:** move focus into the expanded card (heading or container) when it settles;
+  return it to the row on close.
+- **Scroll-aware title (list at rest):** the list title may shrink on scroll, but when a
+  card expands the title shrinks by state, not scroll. Use a gradient backdrop only if the
+  title sits over scrolling content; a plain opaque top bar needs none.
+- **Floating surfaces vs the card:** menus/popovers/pickers floating over scrolling
+  content use a gradient backdrop; modal/bottom-sheet scrims use a dim scrim. The
+  expandable card is opaque fullscreen (no scrim, no shadow at rest).
 
 ## Motion tokens (provisional, tune by eye)
 
 ```
---m-dur-fast: 150ms;  --m-dur-base: 250ms;  --m-dur-slow: 300ms (morph);
+--m-dur-fast: 150ms;  --m-dur-base: 250ms;  --m-dur-expand: 380ms (expandable card);
 --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
---spring-lite: cubic-bezier(0.22, 1.05, 0.36, 1);
 --ease-in: cubic-bezier(0.4, 0, 1, 1);
+/* spring-lite and view-transition morph rules were dropped: the detail uses an
+   in-place expandable card, not the View Transitions API. */
 ```
 
 ## Review before finishing
