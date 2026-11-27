@@ -8,6 +8,10 @@ const entry: Entry = {
   rawText: "hello",
   source: "text",
   createdAt: "2026-11-25T10:00:00.000Z",
+  parentId: null,
+  title: "hello",
+  summary: null,
+  titleSource: "first_line",
   synced: true,
   syncedAt: "2026-11-25T10:00:00.000Z",
 };
@@ -44,6 +48,43 @@ describe("entries API client", () => {
       "http://api.test/entries?limit=50",
       expect.anything()
     );
+  });
+
+  it("requests a parent's follow-ups", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ entries: [entry] }));
+    const parentId = "22222222-2222-4222-8222-222222222222";
+
+    const entries = await clientWith(fetchMock).list(50, parentId);
+
+    expect(entries).toEqual([entry]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `http://api.test/entries?limit=50&parentId=${parentId}`,
+      expect.anything()
+    );
+  });
+
+  it("fetches a single entry by id", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse(entry));
+
+    const fetched = await clientWith(fetchMock).get(entry.id);
+
+    expect(fetched).toEqual(entry);
+    expect(fetchMock).toHaveBeenCalledWith(
+      `http://api.test/entries/${entry.id}`,
+      { headers: { accept: "application/json" } }
+    );
+  });
+
+  it("raises a not-found ApiError for a missing entry", async () => {
+    const api = clientWith(async () =>
+      jsonResponse({ error: "entry_not_found" }, 404)
+    );
+
+    await expect(api.get(entry.id)).rejects.toMatchObject({
+      name: "ApiError",
+      code: "entry_not_found",
+      status: 404,
+    });
   });
 
   it("posts a new entry as JSON and parses the response", async () => {

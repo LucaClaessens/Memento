@@ -1,10 +1,16 @@
 import { z } from "zod";
 
+export const MAX_ENTRY_LENGTH = 10_000;
+
 export const EntrySchema = z.object({
   id: z.string().uuid(),
   rawText: z.string(),
   source: z.enum(["voice", "text"]),
   createdAt: z.string().datetime(),
+  parentId: z.string().uuid().nullable().default(null),
+  title: z.string().nullable().default(null),
+  summary: z.string().nullable().default(null),
+  titleSource: z.enum(["first_line", "ai"]).nullable().default(null),
   synced: z.boolean().default(false),
   syncedAt: z.string().datetime().nullable().default(null),
 });
@@ -15,10 +21,14 @@ export const CreateEntrySchema = z.object({
   id: z.string().uuid().optional(),
   rawText: z
     .string()
-    .max(10_000, "rawText must be at most 10,000 characters")
+    .max(
+      MAX_ENTRY_LENGTH,
+      `rawText must be at most ${MAX_ENTRY_LENGTH.toLocaleString("en-US")} characters`
+    )
     .refine((value) => value.trim().length > 0, "rawText must not be empty"),
   source: z.enum(["voice", "text"]).default("text"),
   createdAt: z.string().datetime().optional(),
+  parentId: z.string().uuid().nullable().optional(),
 });
 
 export type CreateEntry = z.infer<typeof CreateEntrySchema>;

@@ -42,6 +42,10 @@ describe("entries repository", () => {
       rawText: "  typed exactly\n ",
       source: "text",
       createdAt: "2026-11-25T10:00:00.000Z",
+      parentId: null,
+      title: "typed exactly",
+      summary: null,
+      titleSource: "first_line",
       synced: true,
       syncedAt: "2026-11-25T10:00:00.000Z",
     });
@@ -90,6 +94,61 @@ describe("entries repository", () => {
     db.close();
   });
 
+  it("stores follow-ups with a parent and lists roots separately", () => {
+    const db = openDatabase(":memory:");
+    const entries = createEntriesRepository(db);
+    const parent = entries.create(
+      newEntry({ id: "parent", rawText: "the original" })
+    ).entry;
+    const child = entries.create(
+      newEntry({
+        id: "child",
+        rawText: "a follow-up",
+        parentId: parent.id,
+        createdAt: "2026-11-25T11:00:00.000Z",
+      })
+    ).entry;
+
+    expect(child.parentId).toBe(parent.id);
+    expect(entries.list(10).map((entry) => entry.id)).toEqual([parent.id]);
+    expect(entries.list(10, parent.id).map((entry) => entry.id)).toEqual([
+      child.id,
+    ]);
+    expect(entries.get(child.id)).toEqual(child);
+    expect(entries.get("missing")).toBeNull();
+    db.close();
+  });
+
+  it("sets a follow-up's parent to null when the parent is deleted", () => {
+    const db = openDatabase(":memory:");
+    const entries = createEntriesRepository(db);
+    const parent = entries.create(
+      newEntry({ id: "parent", rawText: "the original" })
+    ).entry;
+    const child = entries.create(
+      newEntry({ id: "child", rawText: "a follow-up", parentId: parent.id })
+    ).entry;
+
+    db.prepare("DELETE FROM entries WHERE id = ?").run(parent.id);
+
+    expect(entries.get(child.id)?.parentId).toBeNull();
+    db.close();
+  });
+
+  it("derives a title from the first non-empty line", () => {
+    const db = openDatabase(":memory:");
+    const entries = createEntriesRepository(db);
+
+    const entry = entries.create(
+      newEntry({ rawText: "\n  Morning walk and the light  \nsecond line" })
+    ).entry;
+
+    expect(entry.title).toBe("Morning walk and the light");
+    expect(entry.titleSource).toBe("first_line");
+    expect(entry.summary).toBeNull();
+    db.close();
+  });
+
   it("keeps data across a reopen and applies migrations once", () => {
     const path = tempDbPath();
 
@@ -104,7 +163,10 @@ describe("entries repository", () => {
       .all();
 
     expect(rows.map((entry) => entry.rawText)).toEqual(["hello"]);
-    expect(migrations.map((row) => row.id)).toEqual(["001-create-entries"]);
+    expect(migrations.map((row) => row.id)).toEqual([
+      "001-create-entries",
+      "002-entries-threads-and-titles",
+    ]);
     second.close();
   });
 });

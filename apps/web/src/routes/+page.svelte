@@ -1,18 +1,18 @@
 <script lang="ts">
+  import { MAX_ENTRY_LENGTH } from "@memento/shared";
   import { onMount } from "svelte";
+  import AppBar from "$lib/components/app-bar.svelte";
   import * as Alert from "$lib/components/ui/alert";
   import { Button } from "$lib/components/ui/button";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
   import { entries } from "$lib/stores/entries.svelte";
 
-  const MAX_LENGTH = 10_000;
-
   let text = $state("");
   let textareaRef: HTMLTextAreaElement | null = $state(null);
   let announcement = $state("");
 
-  const tooLong = $derived(text.length > MAX_LENGTH);
+  const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
   const canSubmit = $derived(
     text.trim().length > 0 && !tooLong && !entries.submitting
   );
@@ -48,17 +48,7 @@
 </script>
 
 <div class="flex h-dvh flex-col bg-background text-foreground">
-  <header
-    class="flex h-12 shrink-0 items-center justify-between border-b border-border px-4 md:h-14 md:px-8"
-  >
-    <span class="text-base font-semibold tracking-tight">Memento</span>
-    <a
-      href="/thoughts"
-      class="text-sm text-muted-foreground hover:text-foreground"
-    >
-      Thoughts
-    </a>
-  </header>
+  <AppBar right={{ href: "/thoughts", label: "Thoughts" }} />
 
   <div
     class="mx-auto flex w-full max-w-[720px] flex-1 flex-col min-h-0 px-4 md:px-0"
@@ -79,10 +69,10 @@
     </div>
 
     <div class="shrink-0 py-1 text-right text-xs text-muted-foreground">
-      {text.length.toLocaleString()} / {MAX_LENGTH.toLocaleString()}
+      {text.length.toLocaleString()} / {MAX_ENTRY_LENGTH.toLocaleString()}
       {#if tooLong}
         <span class="text-destructive">
-          — keep under {MAX_LENGTH} characters.
+          — keep under {MAX_ENTRY_LENGTH.toLocaleString()} characters.
         </span>
       {/if}
     </div>
