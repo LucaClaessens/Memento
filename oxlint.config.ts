@@ -30,7 +30,6 @@ export default defineConfig({
     "import/no-namespace": "off",
     "quality/no-unknown-returns": "off",
     "typescript/no-unsafe-type-assertion": "off",
-    "unicorn/consistent-function-scoping": "off",
     "unicorn/prefer-top-level-await": "off",
     "@nkzw/no-instanceof": "off",
   },
