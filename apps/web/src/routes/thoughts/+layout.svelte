@@ -50,6 +50,8 @@
       const onScroll = () => {
         scrolled = node.scrollTop > 40;
       };
+      // A restored scroll position arrives without a scroll event.
+      scrolled = node.scrollTop > 40;
       node.addEventListener("scroll", onScroll, { passive: true });
       return () => node.removeEventListener("scroll", onScroll);
     }}
