@@ -182,6 +182,7 @@
   .row {
     transition:
       transform var(--m-dur-expand) var(--ease-out),
+      opacity var(--m-dur-expand) var(--ease-out),
       background-color 150ms var(--ease-out);
   }
 
@@ -230,6 +231,7 @@
 
   .row.pushed-up,
   .row.pushed-down {
+    opacity: 0;
     pointer-events: none;
   }
 

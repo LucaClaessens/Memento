@@ -137,7 +137,8 @@ properties recalculate style continuously.
   state feedback (focus, loading).
 - **Continuity via an expandable card, not a page swap.** The tapped list row itself grows
   in place to fullscreen; the rows above and below move aside by exactly the card's edge
-  travel (no gap opens); the new detail content fades in across the grow. The row's title
+  travel and fade out on the same timeline (no gap opens); the new detail content fades in
+  across the grow. The row's title
   grows with the card from list size to detail size, so the eye follows the same object.
   Do not use the View Transitions API for this; keep the list mounted (SvelteKit layout)
   and let the active row become the card. Compute the push distances with

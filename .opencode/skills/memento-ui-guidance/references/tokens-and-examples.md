@@ -151,7 +151,9 @@ it so content scrolls under without a hard edge.
 }
 .back-arrow {
   position: absolute;
-  left: 0.2rem;
+  /* The header sits inside the main's 1rem padding, so pull the target back
+     to align the glyph with the row content. */
+  left: -0.9rem;
   top: 50%;
   display: grid;
   place-items: center;
@@ -192,7 +194,7 @@ it so content scrolls under without a hard edge.
 ## Examples: Memento screens
 
 - **Thoughts list → thought detail:** the tapped row grows to fullscreen, rows above and
-  below move aside by the card's edge travel (no fade, no gap), the row title grows to the
+  below move aside by the card's edge travel and fade out on the same timeline (no gap), the row title grows to the
   detail title size, detail content fades in across the grow; close reverses it and
   returns to the original row.
 - **Bottom nav:** already raised pill with tone step; keep as the reference for

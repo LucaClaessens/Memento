@@ -60,7 +60,7 @@
   .back-arrow {
     position: absolute;
     top: 50%;
-    left: 0.2rem;
+    left: -0.9rem;
     z-index: 1;
     display: grid;
     place-items: center;
