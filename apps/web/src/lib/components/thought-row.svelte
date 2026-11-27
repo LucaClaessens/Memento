@@ -200,6 +200,11 @@
   .row.card:hover {
     background: var(--background);
   }
+  /* The card is focused as a dialog container; no ring on the whole surface. */
+  .row.card:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 
   .row-title {
     margin-top: 6px;
