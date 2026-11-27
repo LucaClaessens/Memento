@@ -85,6 +85,29 @@ Memento/
 6. **Weekly review (backend, on demand).** Single Ollama prompt over the week's entries
    produces the one-page review.
 
+## Module documentation
+
+A module that owns a contract other code relies on, an invariant, or a non-obvious
+design choice carries a `DOCUMENTATION.md` in its folder with three parts:
+
+- **Ownership**: what the module owns and where its boundary is.
+- **Invariants**: what must stay true, stated so a change can be checked against it.
+- **Decisions**: one `### Why X and not Y` entry per non-obvious choice (chosen approach,
+  alternative, reason in one or two sentences).
+
+Describe the module as it is now; when a decision changes, rewrite its entry rather than
+appending history. Spend the file's lines on reasons and contracts, not file listings.
+Trivial folders are covered by their parent's document.
+
+## Testability and factories
+
+Memento favors deep modules with small interfaces (see `codebase-design` skill vocabulary).
+Dependencies are passed explicitly so tests can hand over small fakes or real in-memory
+instances; the project's own modules run for real. Factories follow the pattern already
+used in the codebase: `createEntriesRepository(db)`, `newEntry({ ...overrides })`.
+See `.opencode/skills/test-design/SKILL.md` for what earns a test and the rules against
+module mocks and source-text assertions.
+
 ## Auth slot
 
 `apps/api/src/middleware/auth.ts` is a single middleware that validates the shared token
