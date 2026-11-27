@@ -74,8 +74,11 @@ client/store/components → tests.
   startup.
 - The API is built with `createApp({ db })` so tests can use an in-memory database.
 - No business logic in Svelte components; put it in `$lib/api` and `$lib/stores`.
-- For UI, read the vendored skill at
-  `apps/web/.agents/skills/shadcn-svelte/SKILL.md` first.
+- For UI, read the vendored skills first:
+  `apps/web/.agents/skills/shadcn-svelte/SKILL.md`,
+  `.agents/skills/svelte-core-bestpractices/SKILL.md`, and
+  `.agents/skills/svelte-code-writer/SKILL.md` (run `svelte-autofixer` on every
+  changed `.svelte`/`.svelte.ts`/`.svelte.js` file).
 - Run the affected package's typecheck and tests after each layer; fix before moving
   on.
 
