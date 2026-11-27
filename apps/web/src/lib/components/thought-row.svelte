@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, tick } from "svelte";
+  import { fade } from "svelte/transition";
   import { resolve } from "$app/paths";
   import type { Entry } from "@memento/shared";
   import {
@@ -68,7 +69,8 @@
         requestAnimationFrame(() => {
           grown = true;
           titleLarge = true;
-          setTimeout(() => (showDetail = true), reduced() ? 0 : 240);
+          // Fade the detail in across the grow rather than after it.
+          setTimeout(() => (showDetail = true), reduced() ? 0 : 120);
         });
       });
     }
@@ -150,8 +152,9 @@
     </time>
     <h1 class="row-title">{title}</h1>
   </div>
-  {#if summary && !card}
+  {#if summary && !titleLarge}
     <span
+      transition:fade={{ duration: 200 }}
       class="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground"
     >
       {summary}

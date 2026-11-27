@@ -14,6 +14,9 @@
   let scrollEl: HTMLElement | null = $state(null);
 
   const isOpen = $derived(thoughtOverlay.activeId !== null);
+  // The bar returns to its list state as soon as the close starts, so the
+  // arrow/title reverse on the same beat as the open.
+  const headerOpen = $derived(isOpen && !thoughtOverlay.closing);
 
   onMount(() => {
     void entries.load();
@@ -44,10 +47,10 @@
     class="mx-auto w-full max-w-[720px] min-h-0 flex-1 overflow-y-auto px-4 pb-8 [overflow-anchor:none] md:px-0"
   >
     <ThoughtsHeader
-      small={scrolled || isOpen}
-      back={isOpen}
-      scrolled={scrolled || isOpen}
-      onback={isOpen ? () => thoughtOverlay.requestClose() : undefined}
+      small={scrolled || headerOpen}
+      back={headerOpen}
+      scrolled={scrolled || headerOpen}
+      onback={headerOpen ? () => thoughtOverlay.requestClose() : undefined}
     />
     <ThoughtList
       entries={entries.entries}
