@@ -2,6 +2,8 @@
 export class ThoughtOverlayStore {
   activeId = $state<string | null>(null);
   closing = $state(false);
+  pushUp = $state(0);
+  pushDown = $state(0);
   closeHandler: (() => void) | null = $state(null);
 
   open(id: string): void {

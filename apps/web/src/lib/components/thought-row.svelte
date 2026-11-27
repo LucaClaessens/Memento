@@ -34,6 +34,7 @@
   } | null>(null);
   let card = $state(false);
   let grown = $state(false);
+  let titleLarge = $state(false);
   let showDetail = $state(false);
   let closing = $state(false);
   let viewport = $state({ width: 0, height: 0 });
@@ -55,10 +56,18 @@
     if (active && !card && !closing && el) {
       const r = el.getBoundingClientRect();
       rect = { top: r.top, left: r.left, width: r.width, height: r.height };
+      // Push siblings by the same distance the card's edges travel, so the
+      // card and the list move as one surface.
+      thoughtOverlay.pushUp = Math.max(0, r.top - HEADER);
+      thoughtOverlay.pushDown = Math.max(
+        0,
+        window.innerHeight - (r.top + r.height)
+      );
       card = true;
       void tick().then(() => {
         requestAnimationFrame(() => {
           grown = true;
+          titleLarge = true;
           setTimeout(() => (showDetail = true), reduced() ? 0 : 240);
         });
       });
@@ -78,8 +87,11 @@
     if (closing) return;
     closing = true;
     thoughtOverlay.closing = true;
+    thoughtOverlay.pushUp = 0;
+    thoughtOverlay.pushDown = 0;
     showDetail = false;
-    if (!reduced()) await wait(180);
+    // Shrink the title and the card together so the title does not lag behind.
+    titleLarge = false;
     grown = false;
     if (!reduced()) await wait(380);
     card = false;
@@ -96,6 +108,14 @@
         }px; height: ${grown ? viewport.height - HEADER : rect.height}px;`
       : ""
   );
+
+  const pushStyle = $derived(
+    pushed === "up"
+      ? `transform: translateY(-${thoughtOverlay.pushUp}px);`
+      : pushed === "down"
+        ? `transform: translateY(${thoughtOverlay.pushDown}px);`
+        : ""
+  );
 </script>
 
 {#if card && rect}
@@ -110,15 +130,16 @@
   bind:this={el}
   href={card ? undefined : resolve(`/thoughts/${entry.id}`)}
   data-thought-id={entry.id}
-  class="-mx-4 block px-4 py-5 transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
+  class="-mx-4 block px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
   class:card
+  class:title-large={titleLarge}
   class:pushed-up={pushed === "up"}
   class:pushed-down={pushed === "down"}
   class:show-detail={showDetail}
   role={card ? "dialog" : undefined}
   aria-modal={card ? "true" : undefined}
   aria-label={card ? title : undefined}
-  style={cardStyle}
+  style={card ? cardStyle : pushStyle}
 >
   <div class="row-head">
     <time
@@ -148,6 +169,12 @@
     width: 100%;
   }
 
+  a {
+    transition:
+      transform var(--m-dur-expand) var(--ease-out),
+      background-color 150ms var(--ease-out);
+  }
+
   a.card {
     overflow-y: auto;
     margin: 0;
@@ -175,7 +202,7 @@
       font-size var(--m-dur-expand) var(--ease-out),
       letter-spacing var(--m-dur-expand) var(--ease-out);
   }
-  a.card .row-title {
+  a.title-large .row-title {
     font-size: 2.25rem;
     line-height: 1.1;
     letter-spacing: -0.028em;
@@ -188,12 +215,8 @@
     pointer-events: auto;
   }
 
-  a.pushed-up {
-    transform: translateY(-100vh);
-    pointer-events: none;
-  }
+  a.pushed-up,
   a.pushed-down {
-    transform: translateY(100vh);
     pointer-events: none;
   }
 

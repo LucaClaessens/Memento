@@ -38,13 +38,16 @@
     height: 3.5rem;
     align-items: center;
     padding: 0;
-    background: transparent;
+    background: var(--background);
   }
 
   .topbar-gradient {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, var(--background) 45%, transparent);
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: linear-gradient(to bottom, var(--background), transparent);
     opacity: 0;
     transition: opacity 200ms var(--ease-out);
     pointer-events: none;
