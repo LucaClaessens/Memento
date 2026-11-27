@@ -1,6 +1,7 @@
 <script lang="ts">
   import { MAX_ENTRY_LENGTH } from "@memento/shared";
   import { page } from "$app/state";
+  import { resolve } from "$app/paths";
   import { untrack } from "svelte";
   import * as Alert from "$lib/components/ui/alert";
   import { Button } from "$lib/components/ui/button";
@@ -73,7 +74,7 @@
     class="mx-auto w-full max-w-[720px] min-h-0 flex-1 overflow-y-auto px-4 pt-6 pb-8 md:px-0 md:pt-10"
   >
     <a
-      href="/thoughts"
+      href={resolve("/thoughts")}
       class="mb-6 inline-block rounded-sm text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       ← Thoughts
@@ -123,7 +124,11 @@
         >
           {dateLabel}
         </time>
-        <h1 class="mt-2 text-3xl font-semibold tracking-[-0.028em] md:text-4xl">
+        <h1
+          class="mt-2 text-3xl font-semibold tracking-[-0.028em] md:text-4xl"
+          style:view-transition-name="row-title"
+          tabindex="-1"
+        >
           {display.title}
         </h1>
         {#if display.body}
