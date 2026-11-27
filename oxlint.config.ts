@@ -26,7 +26,6 @@ export default defineConfig({
     "quality/no-unknown-returns": "off",
     "typescript/no-non-null-assertion": "off",
     "typescript/no-unsafe-type-assertion": "off",
-    "typescript/use-unknown-in-catch-callback-variable": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/prefer-top-level-await": "off",
     "@nkzw/no-instanceof": "off",

@@ -10,8 +10,9 @@ const app = createApp({ db });
 // app.use("/api/*", authMiddleware);
 
 // Preload the transcription model so the first request is not penalised.
-void transcriber.start().catch((error: Error) => {
-  console.error(`Transcriber unavailable: ${error.message}`);
+void transcriber.start().catch((error: unknown) => {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`Transcriber unavailable: ${message}`);
 });
 
 const port = Number(process.env.PORT ?? 8787);
