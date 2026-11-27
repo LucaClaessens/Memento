@@ -191,13 +191,17 @@
   bind:this={el}
   href={card ? undefined : resolve(`/thoughts/${entry.id}`)}
   data-thought-id={entry.id}
-  class="row -mx-4 block border-border px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3"
-  class:border-t={!first}
-  class:card
-  class:title-large={titleLarge}
-  class:pushed-up={pushed === "up"}
-  class:pushed-down={pushed === "down"}
-  class:show-detail={showDetail}
+  class={[
+    "row -mx-4 block border-border px-4 py-5 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset md:-mx-3 md:px-3",
+    {
+      "border-t": !first,
+      card,
+      "title-large": titleLarge,
+      "pushed-up": pushed === "up",
+      "pushed-down": pushed === "down",
+      "show-detail": showDetail,
+    },
+  ]}
   role={card ? "dialog" : undefined}
   aria-label={card ? title : undefined}
   tabindex={card ? -1 : undefined}
