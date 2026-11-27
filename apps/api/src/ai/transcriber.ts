@@ -3,7 +3,7 @@ import type { ChildProcess } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 
-const isDev = fileURLToPath(import.meta.url).includes("/src/");
+const isDev = import.meta.filename.includes("/src/");
 const workerUrl = new URL(
   isDev ? "./transcriber-worker.ts" : "./transcriber-worker.js",
   import.meta.url
