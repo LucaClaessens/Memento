@@ -24,6 +24,9 @@ export interface SherpaModule {
 
 /** The npm addon is CommonJS; load it once per process through createRequire. */
 export function loadSherpa(): SherpaModule {
+  // sherpa-onnx-node ships no type declarations, so this is the one place the
+  // runtime shape is asserted. The interfaces above are the contract callers see.
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   return require("sherpa-onnx-node") as SherpaModule;
 }
 

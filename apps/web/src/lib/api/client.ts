@@ -32,8 +32,13 @@ export class ApiError extends Error {
 
 async function readErrorCode(response: Response): Promise<string> {
   try {
-    const body = (await response.json()) as { error?: unknown };
-    if (typeof body.error === "string") {
+    const body: unknown = await response.json();
+    if (
+      typeof body === "object" &&
+      body !== null &&
+      "error" in body &&
+      typeof body.error === "string"
+    ) {
       return body.error;
     }
   } catch {

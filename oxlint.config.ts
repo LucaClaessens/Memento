@@ -18,6 +18,12 @@ export default defineConfig({
   ],
   overrides: [
     {
+      // Test fixtures narrow `Response.json()` (typed `any` by lib.dom) to the
+      // error body they expect; the preset already relaxes unsafe rules in tests.
+      files: ["**/*.{test,spec}.{ts,tsx}"],
+      rules: { "typescript/no-unsafe-type-assertion": "off" },
+    },
+    {
       // The API entry point reports startup and shutdown; the preset bans
       // console calls everywhere, including entry points.
       files: ["apps/api/src/index.ts"],
@@ -29,7 +35,6 @@ export default defineConfig({
     // follow-up commit (and removed from this list) or kept off with a reason.
     "import/no-namespace": "off",
     "quality/no-unknown-returns": "off",
-    "typescript/no-unsafe-type-assertion": "off",
     "unicorn/prefer-top-level-await": "off",
     "@nkzw/no-instanceof": "off",
   },

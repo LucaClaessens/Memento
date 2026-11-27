@@ -32,11 +32,15 @@ export function createEntriesApi(client: ApiClient) {
       const form = new FormData();
       form.append("audio", file, "recording.webm");
       const payload = await client.postForm("/transcribe", form, signal);
-      const rawText = (payload as { rawText?: unknown }).rawText;
-      if (typeof rawText !== "string") {
+      if (
+        typeof payload !== "object" ||
+        payload === null ||
+        !("rawText" in payload) ||
+        typeof payload.rawText !== "string"
+      ) {
         throw new Error("Invalid transcription response");
       }
-      return rawText;
+      return payload.rawText;
     },
   };
 }

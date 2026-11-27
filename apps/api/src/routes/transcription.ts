@@ -3,6 +3,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
+import { errorMessage } from "../errors.js";
 import { transcribeAudio } from "../services/transcription.js";
 import { TranscriberUnavailableError } from "../ai/transcriber.js";
 
@@ -43,7 +44,7 @@ export function transcription(): Hono {
         return c.json({ error: "transcriber_unavailable" }, 503);
       }
       return c.json(
-        { error: "transcription_failed", message: (error as Error).message },
+        { error: "transcription_failed", message: errorMessage(error) },
         500
       );
     } finally {
