@@ -1,9 +1,9 @@
-import { spawn } from "node:child_process";
 import { rm } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
-import { transcribe } from "../ai/transcribe.js";
+import { spawn } from "node:child_process";
+import { transcriber } from "../ai/transcriber.js";
 
 const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
 
@@ -29,12 +29,12 @@ async function convertToWav(
   });
 }
 
-/** Convert an uploaded audio blob to WAV and transcribe it locally. */
+/** Convert an uploaded audio blob to WAV and transcribe it on the worker. */
 export async function transcribeAudio(inputPath: string): Promise<string> {
   const wavPath = join(tmpdir(), `memento-${randomUUID()}.wav`);
   try {
     await convertToWav(inputPath, wavPath);
-    return await transcribe(wavPath);
+    return await transcriber.transcribe(wavPath);
   } finally {
     await rm(wavPath, { force: true }).catch(() => undefined);
   }

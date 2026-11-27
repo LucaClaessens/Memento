@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import { transcribeAudio } from "../services/transcription.js";
+import { TranscriberUnavailableError } from "../ai/transcriber.js";
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
 
@@ -38,6 +39,9 @@ export function transcription(): Hono {
       const rawText = await transcribeAudio(path);
       return c.json({ rawText });
     } catch (err) {
+      if (err instanceof TranscriberUnavailableError) {
+        return c.json({ error: "transcriber_unavailable" }, 503);
+      }
       return c.json(
         { error: "transcription_failed", message: (err as Error).message },
         500
