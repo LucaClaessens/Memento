@@ -29,7 +29,6 @@ export default defineConfig({
     // follow-up commit (and removed from this list) or kept off with a reason.
     "import/no-namespace": "off",
     "quality/no-unknown-returns": "off",
-    "typescript/no-non-null-assertion": "off",
     "typescript/no-unsafe-type-assertion": "off",
     "unicorn/consistent-function-scoping": "off",
     "unicorn/prefer-top-level-await": "off",

@@ -140,6 +140,7 @@ export function createTranscriber() {
         throw new TranscriberUnavailableError();
       }
 
+      const proc = child;
       const id = randomUUID();
       return new Promise<string>((resolve, reject) => {
         const timer = setTimeout(() => {
@@ -147,7 +148,7 @@ export function createTranscriber() {
           reject(new Error("Transcription timed out"));
         }, REQUEST_TIMEOUT_MS);
         pending.set(id, { resolve, reject, timer });
-        child!.send({ id, wavPath });
+        proc.send({ id, wavPath });
       });
     },
   };
