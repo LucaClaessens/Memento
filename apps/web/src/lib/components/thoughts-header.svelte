@@ -19,6 +19,7 @@
   <button
     type="button"
     class="back-arrow"
+    data-thought-back
     aria-label="Back to thoughts"
     aria-hidden={!back}
     tabindex={back ? 0 : -1}
@@ -85,6 +86,12 @@
     opacity: 1;
     transform: translate(0, -50%);
     pointer-events: auto;
+  }
+
+  .back-arrow:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 9999px;
   }
 
   .title {

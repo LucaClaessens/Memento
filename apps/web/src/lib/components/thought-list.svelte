@@ -69,12 +69,15 @@
     </Alert.Root>
   {/if}
 
-  <ul class="flex flex-col">
+  <ul
+    class="flex flex-col"
+    inert={activeIndex === -1 && thoughtOverlay.activeId !== null}
+  >
     {#each entries as entry, index (entry.id)}
       {@const pushed = thoughtOverlay.closing
         ? null
         : pushDirection(index, activeIndex)}
-      <li>
+      <li inert={activeIndex !== -1 && index !== activeIndex}>
         <ThoughtRow
           {entry}
           {now}

@@ -4,6 +4,7 @@
   import PenLineIcon from "@lucide/svelte/icons/pen-line";
   import { isTabActive, tabs } from "$lib/navigation";
   import { cn } from "$lib/utils";
+  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
 
   const icons = { pen: PenLineIcon, notebook: NotebookIcon };
   const pathname = $derived(page.url.pathname);
@@ -20,6 +21,7 @@
 
 <nav
   aria-label="Primary"
+  inert={thoughtOverlay.activeId !== null}
   class="shrink-0 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
 >
   <div

@@ -74,7 +74,6 @@
     <div
       class="fixed inset-x-0 top-14 bottom-0 z-30 overflow-y-auto bg-background px-4 pb-8"
       role="dialog"
-      aria-modal="true"
       aria-label={thoughtDetail.thought?.title ?? "Thought"}
     >
       <div class="mx-auto w-full max-w-[720px] pt-5 md:px-0">

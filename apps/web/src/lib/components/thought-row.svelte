@@ -94,6 +94,37 @@
     }
   });
 
+  // Keep Tab inside the card and its back control while the card is open.
+  $effect(() => {
+    if (!card) return;
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab" || !el) return;
+      const back = document.querySelector<HTMLElement>("[data-thought-back]");
+      const focusables = [
+        ...(back ? [back] : []),
+        ...el.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ),
+      ];
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const current = document.activeElement as HTMLElement | null;
+      const inside = current ? focusables.includes(current) : false;
+      if (event.shiftKey) {
+        if (!inside || current === first || current === el) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (!inside || current === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeydown);
+    return () => window.removeEventListener("keydown", onKeydown);
+  });
+
   async function close(): Promise<void> {
     if (closing) return;
     closing = true;
@@ -151,7 +182,6 @@
   class:pushed-down={pushed === "down"}
   class:show-detail={showDetail}
   role={card ? "dialog" : undefined}
-  aria-modal={card ? "true" : undefined}
   aria-label={card ? title : undefined}
   tabindex={card ? -1 : undefined}
   onkeydown={(event: KeyboardEvent) => {
