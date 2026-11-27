@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
   import { page } from "$app/state";
-  import { thoughtDetail } from "$lib/stores/thought-detail.svelte";
-  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { thoughtDetail, thoughtOverlay } from "$lib/stores/app.svelte";
   import { splitThought } from "$lib/thoughts";
 
   const id = $derived(page.params.id ?? "");

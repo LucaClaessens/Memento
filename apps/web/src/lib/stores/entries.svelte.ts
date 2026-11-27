@@ -1,13 +1,18 @@
 import type { Entry } from "@memento/shared";
-import { entriesApi } from "$lib/api";
+import type { EntriesApi } from "$lib/api";
 import { textEntry } from "$lib/capture";
 
 export class EntriesStore {
+  #api: EntriesApi;
   entries = $state<Array<Entry>>([]);
   loading = $state(false);
   submitting = $state(false);
   loadError = $state<string | null>(null);
   submitError = $state<string | null>(null);
+
+  constructor(api: EntriesApi) {
+    this.#api = api;
+  }
 
   async load(): Promise<void> {
     if (this.loading) {
@@ -18,7 +23,7 @@ export class EntriesStore {
     this.loadError = null;
 
     try {
-      this.entries = await entriesApi.list();
+      this.entries = await this.#api.list();
     } catch {
       this.loadError =
         "Couldn’t load your entries. Check that the Memento API is running.";
@@ -35,7 +40,7 @@ export class EntriesStore {
     this.submitError = null;
 
     try {
-      const entry = await entriesApi.create(textEntry(rawText));
+      const entry = await this.#api.create(textEntry(rawText));
 
       this.entries = [
         entry,
@@ -52,4 +57,6 @@ export class EntriesStore {
   }
 }
 
-export const entries = new EntriesStore();
+export function createEntriesStore(api: EntriesApi): EntriesStore {
+  return new EntriesStore(api);
+}

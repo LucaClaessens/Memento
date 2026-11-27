@@ -5,7 +5,7 @@
   import * as Empty from "$lib/components/ui/empty";
   import { Skeleton } from "$lib/components/ui/skeleton";
   import ThoughtRow from "./thought-row.svelte";
-  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import { thoughtOverlay } from "$lib/stores/app.svelte";
   import { pushDirection } from "$lib/thoughts-transition";
 
   interface Props {

@@ -1,8 +1,7 @@
 import { CreateEntrySchema } from "@memento/shared";
 import { Hono } from "hono";
 import { z } from "zod";
-import { createEntriesRepository } from "../db/entries.js";
-import type { Db } from "../db/types.js";
+import type { EntriesRepository } from "../db/entries.js";
 
 const DEFAULT_LIMIT = 50;
 const MAX_LIMIT = 200;
@@ -30,9 +29,7 @@ function parseParentId(value: string | undefined): string | null | "invalid" {
   return parsed.success ? parsed.data : "invalid";
 }
 
-export function entries(db: Db): Hono {
-  const repository = createEntriesRepository(db);
-
+export function entries(repository: EntriesRepository): Hono {
   return new Hono()
     .post("/", async (c) => {
       if (!c.req.header("content-type")?.includes("application/json")) {

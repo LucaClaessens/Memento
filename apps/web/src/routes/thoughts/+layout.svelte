@@ -7,9 +7,11 @@
   import ThoughtsHeader from "$lib/components/thoughts-header.svelte";
   import ThoughtList from "$lib/components/thought-list.svelte";
   import ThoughtDetailContent from "$lib/components/thought-detail-content.svelte";
-  import { entries } from "$lib/stores/entries.svelte";
-  import { thoughtDetail } from "$lib/stores/thought-detail.svelte";
-  import { thoughtOverlay } from "$lib/stores/thought-overlay.svelte";
+  import {
+    entries,
+    thoughtDetail,
+    thoughtOverlay,
+  } from "$lib/stores/app.svelte";
 
   let { children }: { children: Snippet } = $props();
 

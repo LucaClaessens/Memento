@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import type { Snippet } from "svelte";
   import BottomNav from "$lib/components/bottom-nav.svelte";
-  import { navigation } from "$lib/stores/navigation.svelte";
+  import { navigation } from "$lib/stores/app.svelte";
   import "../app.css";
 
   let { children }: { children: Snippet } = $props();

@@ -5,7 +5,7 @@
   import CaptureWaveform from "$lib/components/capture-waveform.svelte";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
-  import { entries } from "$lib/stores/entries.svelte";
+  import { entries } from "$lib/stores/app.svelte";
   import { entriesApi } from "$lib/api";
   import MicIcon from "@lucide/svelte/icons/mic";
 

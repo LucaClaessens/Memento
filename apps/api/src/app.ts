@@ -1,9 +1,15 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { transcriber } from "./ai/transcriber.js";
+import { createEntriesRepository } from "./db/entries.js";
 import type { Db } from "./db/types.js";
 import { entries } from "./routes/entries.js";
 import { health } from "./routes/health.js";
 import { transcription } from "./routes/transcription.js";
+import {
+  createTranscriptionService,
+  type TranscriptionService,
+} from "./services/transcription.js";
 
 export const DEFAULT_WEB_ORIGINS = [
   "http://localhost:5173",
@@ -22,9 +28,15 @@ export function parseOrigins(value: string | undefined): Array<string> {
 export interface AppOptions {
   db: Db;
   allowedOrigins?: Array<string>;
+  /** Overridden by tests to hand over a fake transcription service. */
+  transcription?: TranscriptionService;
 }
 
-export function createApp({ db, allowedOrigins }: AppOptions): Hono {
+export function createApp({
+  db,
+  allowedOrigins,
+  transcription: transcriptionService,
+}: AppOptions): Hono {
   const origins =
     allowedOrigins ?? parseOrigins(process.env.MEMENTO_WEB_ORIGIN);
   const app = new Hono();
@@ -40,8 +52,13 @@ export function createApp({ db, allowedOrigins }: AppOptions): Hono {
   );
 
   app.route("/health", health);
-  app.route("/entries", entries(db));
-  app.route("/transcribe", transcription());
+  app.route("/entries", entries(createEntriesRepository(db)));
+  app.route(
+    "/transcribe",
+    transcription(
+      transcriptionService ?? createTranscriptionService({ transcriber })
+    )
+  );
   app.get("/", (c) => c.text("Memento API"));
 
   return app;
