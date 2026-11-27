@@ -2,6 +2,7 @@
   import { MAX_ENTRY_LENGTH } from "@memento/shared";
   import * as Alert from "$lib/components/ui/alert";
   import { Button } from "$lib/components/ui/button";
+  import CaptureWaveform from "$lib/components/capture-waveform.svelte";
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
   import { entries } from "$lib/stores/entries.svelte";
@@ -23,11 +24,10 @@
   let mediaRecorder: MediaRecorder | null = null;
   let chunks: Blob[] = [];
   let audioContext: AudioContext | null = null;
-  let analyser: AnalyserNode | null = null;
-  let dataArray: Uint8Array<ArrayBuffer> | null = $state(null);
-  let waveLevels = $state<number[]>(Array(24).fill(0));
+  let analyser = $state.raw<AnalyserNode | null>(null);
 
   const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
+  const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1_000);
   const canSubmit = $derived(
     text.trim().length > 0 && !tooLong && !entries.submitting
   );
@@ -46,10 +46,8 @@
       await audioContext.resume();
       const source = audioContext.createMediaStreamSource(stream);
       analyser = audioContext.createAnalyser();
-      analyser.fftSize = 64;
-      analyser.smoothingTimeConstant = 0.2;
+      analyser.fftSize = 1024;
       source.connect(analyser);
-      dataArray = new Uint8Array(analyser.frequencyBinCount);
 
       mediaRecorder = new MediaRecorder(stream);
       chunks = [];
@@ -61,14 +59,7 @@
       elapsed = 0;
       timer = setInterval(() => {
         elapsed += 1;
-        if (analyser && dataArray) {
-          analyser.getByteFrequencyData(dataArray as Uint8Array<ArrayBuffer>);
-          waveLevels = Array.from({ length: 24 }, (_, i) => {
-            const idx = Math.floor((i / 24) * dataArray!.length);
-            return dataArray![idx] / 255;
-          });
-        }
-      }, 50);
+      }, 1_000);
     } catch {
       entries.submitError = "Microphone access denied.";
     }
@@ -90,7 +81,6 @@
     stopTimer();
     chunks = [];
     elapsed = 0;
-    waveLevels = Array(24).fill(0);
   }
 
   async function acceptRecording(): Promise<void> {
@@ -111,7 +101,6 @@
     recording = false;
     stopTimer();
     elapsed = 0;
-    waveLevels = Array(24).fill(0);
     transcribing = true;
     transcribeController = new AbortController();
     try {
@@ -179,52 +168,42 @@
       />
     </div>
 
-    <div class="shrink-0 py-1 text-right text-xs text-muted-foreground">
-      {text.length.toLocaleString()} / {MAX_ENTRY_LENGTH.toLocaleString()}
-      {#if tooLong}
-        <span class="text-destructive">
-          — keep under {MAX_ENTRY_LENGTH.toLocaleString()} characters.
-        </span>
-      {/if}
-    </div>
-
     {#if entries.submitError}
       <div class="shrink-0 pb-2">
         <Alert.Root variant="destructive">
-          <Alert.Title>Couldn’t save</Alert.Title>
+          <Alert.Title>Couldn’t capture</Alert.Title>
           <Alert.Description>{entries.submitError}</Alert.Description>
         </Alert.Root>
       </div>
     {/if}
 
     <div
-      class="flex shrink-0 items-center gap-2 rounded-2xl border border-border bg-card/70 p-2 md:gap-3"
+      class="flex min-h-14 shrink-0 items-center gap-2 rounded-2xl bg-card p-2 shadow-sm ring-1 ring-border/60 md:gap-3"
     >
       {#if recording}
         <button
           type="button"
-          class="size-10 shrink-0 rounded-full border border-border flex items-center justify-center text-destructive animate-pulse"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-destructive shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Recording"
           data-slot="record-control"
         >
           <MicIcon class="size-5" />
         </button>
-        <div class="flex flex-1 items-center gap-2 px-2">
-          <div class="flex items-center gap-0.5 h-7">
-            {#each waveLevels as level, i (i)}
-              <span
-                class="w-1 rounded-sm bg-primary"
-                style="height: {Math.max(2, level * 28)}px"
-              ></span>
-            {/each}
+        <div class="flex min-w-0 flex-1 items-center gap-2 px-2">
+          <div class="min-w-0 flex-1">
+            <CaptureWaveform {analyser} />
           </div>
-          <span class="text-xs tabular-nums text-muted-foreground ml-auto">
-            {Math.floor(elapsed / 10)}s
+          <span
+            class="size-1.5 shrink-0 rounded-full bg-destructive motion-safe:animate-pulse"
+            aria-hidden="true"
+          ></span>
+          <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
+            {elapsed}s
           </span>
         </div>
         <button
           type="button"
-          class="size-9 shrink-0 rounded-full border border-border flex items-center justify-center text-muted-foreground"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Cancel recording"
           onclick={() => cancelRecording()}
         >
@@ -232,7 +211,7 @@
         </button>
         <button
           type="button"
-          class="size-9 shrink-0 rounded-full bg-primary text-primary-foreground flex items-center justify-center"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Accept recording"
           onclick={() => void acceptRecording()}
         >
@@ -240,17 +219,16 @@
         </button>
       {:else if transcribing}
         <div
-          class="size-10 shrink-0 rounded-full border border-border flex items-center justify-center"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-info"
           aria-label="Transcribing"
+          role="status"
         >
           <Spinner class="size-5" />
         </div>
-        <span class="flex-1 text-center text-xs text-muted-foreground">
-          Transcribing…
-        </span>
+        <span class="flex-1 text-center text-xs text-info">Transcribing…</span>
         <button
           type="button"
-          class="size-9 shrink-0 rounded-full border border-border flex items-center justify-center text-muted-foreground"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Cancel transcription"
           onclick={() => cancelRecording()}
         >
@@ -259,21 +237,29 @@
       {:else}
         <button
           type="button"
-          class="size-10 shrink-0 rounded-full border border-border flex items-center justify-center"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full border border-border shadow-xs transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Start recording"
           data-slot="record-control"
           onclick={() => void startRecording()}
         >
           <MicIcon class="size-5" />
         </button>
-        <span class="flex-1 text-center text-xs text-muted-foreground">
-          ⌘↵ to save
+        <span
+          class="flex-1 text-center text-xs {tooLong
+            ? 'text-destructive'
+            : 'text-muted-foreground'}"
+        >
+          {#if nearLimit}
+            {text.length.toLocaleString()} / {MAX_ENTRY_LENGTH.toLocaleString()}
+          {:else}
+            <span class="hidden md:inline">⌘↵ to save</span>
+          {/if}
         </span>
         <Button
           type="submit"
           disabled={!canSubmit}
           onclick={() => void submit()}
-          class="size-9 p-0"
+          class="size-10 rounded-full p-0"
           aria-label="Capture"
         >
           {#if entries.submitting}
