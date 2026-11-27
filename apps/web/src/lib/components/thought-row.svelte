@@ -116,13 +116,13 @@
         return;
       }
       const first = focusables[0];
-      const last = focusables[focusables.length - 1];
+      const last = focusables.at(-1);
       const current = document.activeElement as HTMLElement | null;
       const inside = current ? focusables.includes(current) : false;
       if (event.shiftKey) {
         if (!inside || current === first || current === el) {
           event.preventDefault();
-          last.focus();
+          last?.focus();
         }
       } else if (!inside || current === last) {
         event.preventDefault();
