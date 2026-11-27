@@ -1,4 +1,4 @@
 {
   "*": "prettier --ignore-unknown --write",
-  "*.{ts,tsx,js,svelte}": "eslint --fix"
+  "*.{ts,tsx,js,svelte}": "oxlint --fix"
 }

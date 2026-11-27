@@ -66,7 +66,7 @@ Memento/
 | LLM (extraction, digest) | Ollama (backend)                               | Local (ADR-0001)                                                               |
 | Offline storage (phone)  | IndexedDB                                      | Offline-first capture (ADR-0004)                                               |
 | Network/auth             | Tailscale + shared token                       | No accounts in v1 (ADR-0005)                                                   |
-| Lint/format              | ESLint + Prettier                              | Conventional, robust Svelte support                                            |
+| Lint/format              | oxlint + Prettier                              | Fast, maintained upstream preset; formatting stays in Prettier                 |
 | Tests                    | Vitest                                         | Standard for Vite/SvelteKit; works for Hono                                    |
 | CI                       | GitHub Actions                                 | Typecheck + tests + build + lint on push/PR to main                            |
 
