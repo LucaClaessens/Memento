@@ -1,24 +1,41 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Downloads Parakeet TDT 0.6B v3 model files for sherpa-onnx and checks prerequisites.
+# Bootstrap local transcription: sherpa-onnx CLI + Parakeet TDT 0.6B v3 (int8) model.
 # Run from the repo root: ./scripts/setup-transcription.sh
+# Nothing is committed: binaries/models live in .cache/ and data/ (gitignored).
 
-MODELS_DIR="${MEMENTO_MODELS_DIR:-./data/models}"
-MODEL_DIR="$MODELS_DIR/parakeet-tdt-0.6b-v3"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+BIN_DIR="$ROOT/.cache/sherpa-onnx"
+MODEL_DIR="${MEMENTO_MODELS_DIR:-$ROOT/apps/api/data/models}/parakeet-tdt-0.6b-v3"
+VERSION="2.0.3"
+BASE="https://github.com/k2-fsa/sherpa-onnx/releases/download/v${VERSION}"
+MODEL_BASE="https://huggingface.co/csukuangfj/sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8/resolve/main"
 
-mkdir -p "$MODEL_DIR"
-
-if ! command -v sherpa-onnx-offline >/dev/null 2>&1; then
-  echo "sherpa-onnx-offline not found on PATH."
-  echo "Install sherpa-onnx from https://github.com/k2-fsa/sherpa-onnx/releases and add to PATH (or set SHERPA_ONNX_BIN)."
-fi
+mkdir -p "$BIN_DIR" "$MODEL_DIR"
 
 if ! command -v ffmpeg >/dev/null 2>&1; then
-  echo "ffmpeg not found on PATH. Install via: brew install ffmpeg"
+  echo "ffmpeg not found. Install with: brew install ffmpeg" >&2
+  exit 1
 fi
 
-echo "Download Parakeet TDT 0.6B v3 model files into $MODEL_DIR:"
-echo "  encoder.int8.onnx, decoder.int8.onnx, joiner.int8.onnx, tokens.txt"
-echo "See https://github.com/k2-fsa/sherpa-onnx for the model download links."
-echo "Set MEMENTO_MODELS_DIR / SHERPA_ONNX_BIN in .env if you use custom paths."
+if [ ! -x "$BIN_DIR/sherpa-onnx-offline" ]; then
+  echo "Downloading sherpa-onnx ${VERSION} (macOS arm64)..."
+  TMP="$(mktemp -d)"
+  curl -fL -o "$TMP/sherpa.tar.bz2" "$BASE/sherpa-onnx-v${VERSION}-osx-arm64-static.tar.bz2"
+  tar -xjf "$TMP/sherpa.tar.bz2" -C "$TMP" "sherpa-onnx-v${VERSION}-osx-arm64-static/bin"
+  cp "$TMP/sherpa-onnx-v${VERSION}-osx-arm64-static/bin/sherpa-onnx-offline" "$BIN_DIR/"
+  chmod +x "$BIN_DIR/sherpa-onnx-offline"
+  rm -rf "$TMP"
+fi
+
+for f in encoder.int8.onnx decoder.int8.onnx joiner.int8.onnx tokens.txt; do
+  if [ ! -f "$MODEL_DIR/$f" ]; then
+    echo "Downloading $f ..."
+    curl -fL -o "$MODEL_DIR/$f" "$MODEL_BASE/$f"
+  fi
+done
+
+echo "Ready. Set these in apps/api/.env (or export before pnpm dev):"
+echo "  SHERPA_ONNX_BIN=$BIN_DIR/sherpa-onnx-offline"
+echo "  MEMENTO_MODELS_DIR=$(dirname "$MODEL_DIR")"

@@ -7,6 +7,25 @@ export const MODELS_DIR = process.env.MEMENTO_MODELS_DIR ?? "./data/models";
 
 export const PARAKEET_MODEL_DIR = `${MODELS_DIR}/parakeet-tdt-0.6b-v3`;
 
+/** sherpa-onnx 2.x prints a JSON result line; older builds print "text: ...". */
+export function parseSherpaOutput(stdout: string): string {
+  const jsonLine = stdout
+    .split("\n")
+    .map((line) => line.trim())
+    .reverse()
+    .find((line) => line.startsWith("{"));
+  if (jsonLine) {
+    try {
+      const parsed = JSON.parse(jsonLine) as { text?: string };
+      return (parsed.text ?? "").trim();
+    } catch {
+      // fall through
+    }
+  }
+  const match = stdout.match(/text:\s*([\s\S]*?)(?:\n\s*\n|$)/i);
+  return (match ? match[1] : stdout).trim();
+}
+
 /**
  * Transcribe a 16 kHz mono WAV file with Parakeet TDT 0.6B v3 via sherpa-onnx.
  * Runs as a local process; never on the capture path.
@@ -39,10 +58,7 @@ export async function transcribe(audioPath: string): Promise<string> {
         reject(new Error(`sherpa-onnx exited ${code}: ${stderr.trim()}`));
         return;
       }
-      // sherpa-onnx prints "text: <transcript>" (possibly wrapped).
-      const match = stdout.match(/text:\s*([\s\S]*?)(?:\n\s*\n|$)/i);
-      const text = (match ? match[1] : stdout).trim();
-      resolve(text);
+      resolve(parseSherpaOutput(stdout));
     });
   });
 }

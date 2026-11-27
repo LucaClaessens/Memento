@@ -17,6 +17,7 @@ vite.config.ts.timestamp-*
 !.env.example
 
 # data / local state
+.cache/
 *.db
 *.db-wal
 *.db-shm
