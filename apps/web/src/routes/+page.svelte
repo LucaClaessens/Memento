@@ -6,7 +6,6 @@
   import { Spinner } from "$lib/components/ui/spinner";
   import { Textarea } from "$lib/components/ui/textarea";
   import { entries } from "$lib/stores/app.svelte";
-  import { entriesApi } from "$lib/api";
   import MicIcon from "@lucide/svelte/icons/mic";
 
   import SendIcon from "@lucide/svelte/icons/send";
@@ -108,7 +107,7 @@
     transcribing = true;
     transcribeController = new AbortController();
     try {
-      const transcript = await entriesApi.transcribeAudio(
+      const transcript = await entries.transcribe(
         blob,
         transcribeController.signal
       );

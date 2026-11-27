@@ -3,6 +3,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { TranscriberUnavailableError } from "../ai/transcriber.js";
 import { createTranscriptionService } from "./transcription.js";
 
 const tempDirs: Array<string> = [];
@@ -34,15 +35,13 @@ describe("transcription service", () => {
         await writeFile(output, "wav bytes");
       },
       tempDir: dir,
-      newId: () => "fixed",
     });
 
     const text = await service.transcribe("/uploads/recording.webm");
 
-    const wavPath = join(dir, "memento-fixed.wav");
     expect(text).toBe("hello there");
-    expect(calls).toEqual([wavPath]);
-    expect(existsSync(wavPath)).toBe(false);
+    expect(calls).toHaveLength(1);
+    expect(existsSync(calls[0])).toBe(false);
   });
 
   it("removes the WAV when transcription fails", async () => {
@@ -59,13 +58,31 @@ describe("transcription service", () => {
         await writeFile(output, "wav bytes");
       },
       tempDir: dir,
-      newId: () => "fixed",
     });
 
     await expect(service.transcribe("/uploads/recording.webm")).rejects.toThrow(
       "worker down"
     );
-    expect(wavPath).toBe(join(dir, "memento-fixed.wav"));
+    expect(wavPath).not.toBe("");
     expect(existsSync(wavPath)).toBe(false);
+  });
+
+  it("passes an unavailable transcriber error through unchanged", async () => {
+    const dir = await tempDir();
+    const service = createTranscriptionService({
+      transcriber: {
+        async transcribe() {
+          throw new TranscriberUnavailableError();
+        },
+      },
+      convert: async (_input, output) => {
+        await writeFile(output, "wav bytes");
+      },
+      tempDir: dir,
+    });
+
+    await expect(
+      service.transcribe("/uploads/recording.webm")
+    ).rejects.toBeInstanceOf(TranscriberUnavailableError);
   });
 });

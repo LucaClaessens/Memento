@@ -19,9 +19,10 @@ and no HTTP concerns.
 ### Why a factory with an injected transcriber and converter
 
 Tests need to prove the cleanup and error path without a model, a worker process or
-`ffmpeg`. Passing `transcriber`, `convert`, `tempDir` and `newId` as arguments lets a
-test hand over small fakes while the real module runs. The route receives the service,
-so it maps errors without knowing where they came from.
+`ffmpeg`. Passing `transcriber`, `convert` and `tempDir` as arguments lets a test hand
+over small fakes while the real module runs. Production conversion reads `FFMPEG_BIN`
+inside the default converter. The route receives the service, so it maps errors
+without knowing where they came from.
 
 ### Why convert before queueing on the worker
 

@@ -14,9 +14,7 @@ export interface TranscriptionServiceOptions {
   transcriber: Pick<Transcriber, "transcribe">;
   /** Converts the upload to the worker's 16 kHz mono WAV. */
   convert?: ConvertAudio;
-  ffmpegBin?: string;
   tempDir?: string;
-  newId?: () => string;
 }
 
 export interface TranscriptionService {
@@ -53,16 +51,15 @@ async function convertWithFfmpeg(
 export function createTranscriptionService({
   transcriber,
   convert,
-  ffmpegBin = process.env.FFMPEG_BIN ?? "ffmpeg",
   tempDir = tmpdir(),
-  newId = () => crypto.randomUUID(),
 }: TranscriptionServiceOptions): TranscriptionService {
+  const ffmpegBin = process.env.FFMPEG_BIN ?? "ffmpeg";
   const convertAudio =
     convert ?? ((input, output) => convertWithFfmpeg(ffmpegBin, input, output));
 
   return {
     async transcribe(inputPath) {
-      const wavPath = join(tempDir, `memento-${newId()}.wav`);
+      const wavPath = join(tempDir, `memento-${crypto.randomUUID()}.wav`);
       try {
         await convertAudio(inputPath, wavPath);
         return await transcriber.transcribe(wavPath);

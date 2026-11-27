@@ -6,10 +6,8 @@ import type { Db } from "./db/types.js";
 import { entries } from "./routes/entries.js";
 import { health } from "./routes/health.js";
 import { transcription } from "./routes/transcription.js";
-import {
-  createTranscriptionService,
-  type TranscriptionService,
-} from "./services/transcription.js";
+import { createTranscriptionService } from "./services/transcription.js";
+import type { TranscriptionService } from "./services/transcription.js";
 
 export const DEFAULT_WEB_ORIGINS = [
   "http://localhost:5173",

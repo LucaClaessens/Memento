@@ -1,7 +1,7 @@
 import type { CreateEntry, Entry } from "@memento/shared";
 import { describe, expect, it } from "vitest";
-import type { EntriesApi } from "$lib/api";
 import { createEntriesStore } from "./entries.svelte";
+import type { EntriesStoreApi } from "./entries.svelte";
 
 function newEntry(overrides: Partial<Entry> = {}): Entry {
   return {
@@ -19,12 +19,11 @@ function newEntry(overrides: Partial<Entry> = {}): Entry {
   };
 }
 
-function fakeEntriesApi(overrides: Partial<EntriesApi> = {}): EntriesApi {
+function fakeEntriesApi(
+  overrides: Partial<EntriesStoreApi> = {}
+): EntriesStoreApi {
   return {
     list: async () => [],
-    get: async () => {
-      throw new Error("not used");
-    },
     create: async (input: CreateEntry) =>
       newEntry({ id: input.id ?? "created", rawText: input.rawText }),
     transcribeAudio: async () => "",
@@ -46,18 +45,25 @@ describe("entries store", () => {
     expect(store.loadError).toBeNull();
   });
 
-  it("keeps the existing entries and reports a load failure", async () => {
+  it("keeps the existing entries when a reload fails", async () => {
+    const entry = newEntry();
+    let calls = 0;
     const store = createEntriesStore(
       fakeEntriesApi({
         list: async () => {
-          throw new Error("API down");
+          calls += 1;
+          if (calls === 2) {
+            throw new Error("API down");
+          }
+          return [entry];
         },
       })
     );
+    await store.load();
 
     await store.load();
 
-    expect(store.entries).toEqual([]);
+    expect(store.entries).toEqual([entry]);
     expect(store.loading).toBe(false);
     expect(store.loadError).toContain("Couldn’t load your entries");
   });

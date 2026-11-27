@@ -1,8 +1,8 @@
 import type { CreateEntry, Entry } from "@memento/shared";
 import { describe, expect, it } from "vitest";
-import type { EntriesApi } from "$lib/api";
 import { ApiError } from "$lib/api/client";
 import { createThoughtDetailStore } from "./thought-detail.svelte";
+import type { ThoughtDetailApi } from "./thought-detail.svelte";
 
 function newEntry(overrides: Partial<Entry> = {}): Entry {
   return {
@@ -20,13 +20,14 @@ function newEntry(overrides: Partial<Entry> = {}): Entry {
   };
 }
 
-function fakeEntriesApi(overrides: Partial<EntriesApi> = {}): EntriesApi {
+function fakeEntriesApi(
+  overrides: Partial<ThoughtDetailApi> = {}
+): ThoughtDetailApi {
   return {
     list: async () => [],
     get: async () => newEntry(),
     create: async (input: CreateEntry) =>
       newEntry({ id: input.id ?? "created", rawText: input.rawText }),
-    transcribeAudio: async () => "",
     ...overrides,
   };
 }

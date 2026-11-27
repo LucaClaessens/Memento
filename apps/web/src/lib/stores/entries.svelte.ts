@@ -2,15 +2,20 @@ import type { Entry } from "@memento/shared";
 import type { EntriesApi } from "$lib/api";
 import { textEntry } from "$lib/capture";
 
+export type EntriesStoreApi = Pick<
+  EntriesApi,
+  "list" | "create" | "transcribeAudio"
+>;
+
 export class EntriesStore {
-  #api: EntriesApi;
+  #api: EntriesStoreApi;
   entries = $state<Array<Entry>>([]);
   loading = $state(false);
   submitting = $state(false);
   loadError = $state<string | null>(null);
   submitError = $state<string | null>(null);
 
-  constructor(api: EntriesApi) {
+  constructor(api: EntriesStoreApi) {
     this.#api = api;
   }
 
@@ -30,6 +35,10 @@ export class EntriesStore {
     } finally {
       this.loading = false;
     }
+  }
+
+  transcribe(file: Blob, signal?: AbortSignal): Promise<string> {
+    return this.#api.transcribeAudio(file, signal);
   }
 
   async capture(rawText: string): Promise<boolean> {
@@ -57,6 +66,6 @@ export class EntriesStore {
   }
 }
 
-export function createEntriesStore(api: EntriesApi): EntriesStore {
+export function createEntriesStore(api: EntriesStoreApi): EntriesStore {
   return new EntriesStore(api);
 }
