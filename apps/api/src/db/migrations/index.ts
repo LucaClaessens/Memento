@@ -29,7 +29,9 @@ export function runMigrations(db: Db): void {
   );
 
   for (const migration of migrations) {
-    if (applied.has(migration.id)) continue;
+    if (applied.has(migration.id)) {
+      continue;
+    }
 
     db.transaction(() => {
       migration.up(db);

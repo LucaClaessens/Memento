@@ -14,7 +14,9 @@ export const tabs: readonly NavigationTab[] = [
 
 /** A non-root tab is active on its own route and any nested route. */
 export function isTabActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/";
+  if (href === "/") {
+    return pathname === "/";
+  }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

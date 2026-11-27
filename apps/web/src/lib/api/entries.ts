@@ -14,7 +14,9 @@ export function createEntriesApi(client: ApiClient) {
      */
     async list(limit = 50, parentId?: string): Promise<Entry[]> {
       const params = new URLSearchParams({ limit: String(limit) });
-      if (parentId) params.set("parentId", parentId);
+      if (parentId) {
+        params.set("parentId", parentId);
+      }
 
       const payload = await client.get(`/entries?${params.toString()}`);
       return EntryListSchema.parse(payload).entries;

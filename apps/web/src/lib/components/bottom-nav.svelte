@@ -19,7 +19,9 @@
 
   $effect(() => {
     const el = tabEls[activeIndex];
-    if (!el || !container) return;
+    if (!el || !container) {
+      return;
+    }
     const containerRect = container.getBoundingClientRect();
     const rect = el.getBoundingClientRect();
     indicator = {
@@ -34,7 +36,9 @@
   $effect(() => {
     const remeasure = () => {
       const el = tabEls[activeIndex];
-      if (!el || !container) return;
+      if (!el || !container) {
+        return;
+      }
       const containerRect = container.getBoundingClientRect();
       const rect = el.getBoundingClientRect();
       indicator = { x: rect.left - containerRect.left, width: rect.width };
@@ -44,7 +48,9 @@
   });
 
   function handleClick(event: MouseEvent, href: string): void {
-    if (!isTabActive(pathname, href)) return;
+    if (!isTabActive(pathname, href)) {
+      return;
+    }
 
     event.preventDefault();
     document

@@ -52,7 +52,9 @@
       mediaRecorder = new MediaRecorder(stream);
       chunks = [];
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunks.push(e.data);
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
       };
       mediaRecorder.start();
       recording = true;
@@ -84,7 +86,9 @@
   }
 
   async function acceptRecording(): Promise<void> {
-    if (!mediaRecorder) return;
+    if (!mediaRecorder) {
+      return;
+    }
     const rec = mediaRecorder;
     const blobPromise = new Promise<Blob>((resolve) => {
       rec.onstop = () => {
@@ -120,7 +124,9 @@
   }
 
   async function submit(): Promise<void> {
-    if (!canSubmit) return;
+    if (!canSubmit) {
+      return;
+    }
 
     const captured = await entries.capture(text);
     if (captured) {

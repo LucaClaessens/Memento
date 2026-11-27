@@ -9,8 +9,12 @@ const MAX_LIMIT = 200;
 const parentIdSchema = z.string().uuid();
 
 function parseLimit(value: string | undefined): number | null {
-  if (value === undefined) return DEFAULT_LIMIT;
-  if (!/^\d+$/.test(value)) return null;
+  if (value === undefined) {
+    return DEFAULT_LIMIT;
+  }
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
 
   const limit = Number(value);
   return limit >= 1 && limit <= MAX_LIMIT ? limit : null;
@@ -18,7 +22,9 @@ function parseLimit(value: string | undefined): number | null {
 
 /** Absent, empty, or the literal "null" means roots; anything else must be a UUID. */
 function parseParentId(value: string | undefined): string | null | "invalid" {
-  if (value === undefined || value === "" || value === "null") return null;
+  if (value === undefined || value === "" || value === "null") {
+    return null;
+  }
 
   const parsed = parentIdSchema.safeParse(value);
   return parsed.success ? parsed.data : "invalid";

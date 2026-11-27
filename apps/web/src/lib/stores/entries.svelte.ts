@@ -10,7 +10,9 @@ export class EntriesStore {
   submitError = $state<string | null>(null);
 
   async load(): Promise<void> {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
 
     this.loading = true;
     this.loadError = null;
@@ -26,7 +28,9 @@ export class EntriesStore {
   }
 
   async capture(rawText: string): Promise<boolean> {
-    if (this.submitting) return false;
+    if (this.submitting) {
+      return false;
+    }
     this.submitting = true;
     this.submitError = null;
 

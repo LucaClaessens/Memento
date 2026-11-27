@@ -16,9 +16,13 @@
   $effect(() => {
     const el = canvas;
     const node = analyser;
-    if (!el || !node) return;
+    if (!el || !node) {
+      return;
+    }
     const ctx = el.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      return;
+    }
 
     let color = getComputedStyle(el).color;
     let levels: number[] = [];
@@ -30,7 +34,9 @@
     const draw = (width: number, height: number) => {
       ctx.clearRect(0, 0, width, height);
       const capacity = Math.max(1, Math.floor(width / BAR_PITCH));
-      while (levels.length > capacity) levels.shift();
+      while (levels.length > capacity) {
+        levels.shift();
+      }
 
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
@@ -43,7 +49,9 @@
 
       for (let i = 0; i < levels.length; i++) {
         const x = rightX - (levels.length - 1 - i) * BAR_PITCH;
-        if (x < BAR_WIDTH / 2) continue;
+        if (x < BAR_WIDTH / 2) {
+          continue;
+        }
         const barHeight =
           BAR_WIDTH +
           (maxHeight - BAR_WIDTH) * Math.pow(levels[i], LEVEL_CURVE);
@@ -72,7 +80,9 @@
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
-      if (now - lastSampleAt < SAMPLE_MS) return;
+      if (now - lastSampleAt < SAMPLE_MS) {
+        return;
+      }
       lastSampleAt = now;
 
       if (!data || data.length !== node.fftSize) {
@@ -83,7 +93,9 @@
       let max = 0;
       for (let i = 0; i < data.length; i++) {
         const value = Math.abs(data[i] - 128) / 128;
-        if (value > max) max = value;
+        if (value > max) {
+          max = value;
+        }
       }
       // Keep the peak between samples so a short syllable stays visible.
       peak = Math.max(peak, max);

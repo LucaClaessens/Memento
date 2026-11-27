@@ -11,8 +11,12 @@ export function firstLineTitle(rawText: string): string {
     .find((line) => line.trim().length > 0)
     ?.trim();
 
-  if (!firstLine) return UNTITLED_THOUGHT;
-  if (firstLine.length <= MAX_TITLE_LENGTH) return firstLine;
+  if (!firstLine) {
+    return UNTITLED_THOUGHT;
+  }
+  if (firstLine.length <= MAX_TITLE_LENGTH) {
+    return firstLine;
+  }
 
   return `${firstLine.slice(0, MAX_TITLE_LENGTH - 1).trimEnd()}…`;
 }

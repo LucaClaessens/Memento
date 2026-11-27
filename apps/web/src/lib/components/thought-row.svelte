@@ -89,16 +89,22 @@
     if (active) {
       thoughtOverlay.closeHandler = () => void close();
       return () => {
-        if (thoughtOverlay.closeHandler) thoughtOverlay.closeHandler = null;
+        if (thoughtOverlay.closeHandler) {
+          thoughtOverlay.closeHandler = null;
+        }
       };
     }
   });
 
   // Keep Tab inside the card and its back control while the card is open.
   $effect(() => {
-    if (!card) return;
+    if (!card) {
+      return;
+    }
     const onKeydown = (event: KeyboardEvent) => {
-      if (event.key !== "Tab" || !el) return;
+      if (event.key !== "Tab" || !el) {
+        return;
+      }
       const back = document.querySelector<HTMLElement>("[data-thought-back]");
       const focusables = [
         ...(back ? [back] : []),
@@ -106,7 +112,9 @@
           'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
         ),
       ];
-      if (focusables.length === 0) return;
+      if (focusables.length === 0) {
+        return;
+      }
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
       const current = document.activeElement as HTMLElement | null;
@@ -126,7 +134,9 @@
   });
 
   async function close(): Promise<void> {
-    if (closing) return;
+    if (closing) {
+      return;
+    }
     closing = true;
     thoughtOverlay.closing = true;
     thoughtOverlay.setPush(0, 0);
@@ -134,7 +144,9 @@
     // Shrink the title and the card together so the title does not lag behind.
     titleLarge = false;
     grown = false;
-    if (!reduced()) await wait(380);
+    if (!reduced()) {
+      await wait(380);
+    }
     card = false;
     closing = false;
     onclosed?.();

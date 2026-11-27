@@ -52,16 +52,25 @@ export function createTranscriber() {
       return;
     }
     const entry = pending.get(message.id);
-    if (!entry) return;
+    if (!entry) {
+      return;
+    }
     clearTimeout(entry.timer);
     pending.delete(message.id);
-    if (message.error) entry.reject(new Error(message.error));
-    else entry.resolve(message.text ?? "");
+    if (message.error) {
+      entry.reject(new Error(message.error));
+    } else {
+      entry.resolve(message.text ?? "");
+    }
   }
 
   function start(): Promise<void> {
-    if (ready && child && !child.killed) return Promise.resolve();
-    if (startPromise) return startPromise;
+    if (ready && child && !child.killed) {
+      return Promise.resolve();
+    }
+    if (startPromise) {
+      return startPromise;
+    }
 
     startPromise = new Promise<void>((resolve, reject) => {
       const env = {
@@ -94,7 +103,9 @@ export function createTranscriber() {
       proc.on("exit", () => {
         proc.off("message", onReady);
         ready = false;
-        if (child === proc) child = null;
+        if (child === proc) {
+          child = null;
+        }
         failAll("Transcriber worker exited");
       });
       proc.on("error", (err) => {
@@ -111,7 +122,9 @@ export function createTranscriber() {
   return {
     start,
     stop(): void {
-      if (child && !child.killed) child.kill();
+      if (child && !child.killed) {
+        child.kill();
+      }
       child = null;
       ready = false;
       failAll("Transcriber stopped");

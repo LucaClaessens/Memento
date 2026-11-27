@@ -57,6 +57,8 @@ export function pushDirection(
   index: number,
   activeIndex: number
 ): PushDirection {
-  if (activeIndex === -1 || index === activeIndex) return null;
+  if (activeIndex === -1 || index === activeIndex) {
+    return null;
+  }
   return index < activeIndex ? "up" : "down";
 }

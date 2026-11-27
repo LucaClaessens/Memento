@@ -26,13 +26,17 @@
   );
 
   async function submitFollowUp(): Promise<void> {
-    if (!canSubmit || !thoughtDetail.thought) return;
+    if (!canSubmit || !thoughtDetail.thought) {
+      return;
+    }
 
     const added = await thoughtDetail.addFollowUp(
       thoughtDetail.thought.id,
       followUp
     );
-    if (!added) return;
+    if (!added) {
+      return;
+    }
 
     followUp = "";
     announcement = "";

@@ -18,11 +18,15 @@ export function thoughtSummary(
   entry: Pick<Entry, "summary" | "title" | "rawText">
 ): string | null {
   const stored = entry.summary?.trim();
-  if (stored) return stored;
+  if (stored) {
+    return stored;
+  }
 
   const lines = entry.rawText.split(/\r?\n/);
   const firstLineIndex = lines.findIndex((line) => line.trim().length > 0);
-  if (firstLineIndex === -1) return null;
+  if (firstLineIndex === -1) {
+    return null;
+  }
 
   const preview = lines
     .slice(firstLineIndex + 1)
@@ -51,7 +55,9 @@ export function splitThought(
 
   const lines = entry.rawText.split(/\r?\n/);
   const firstLineIndex = lines.findIndex((line) => line.trim().length > 0);
-  if (firstLineIndex === -1) return { title, body: "" };
+  if (firstLineIndex === -1) {
+    return { title, body: "" };
+  }
 
   return {
     title,
@@ -74,7 +80,9 @@ const formatterCache = new Map<string, DateFormatters>();
 function formatters(locale?: string): DateFormatters {
   const key = locale ?? "default";
   const cached = formatterCache.get(key);
-  if (cached) return cached;
+  if (cached) {
+    return cached;
+  }
 
   const created: DateFormatters = {
     time: new Intl.DateTimeFormat(locale, {
@@ -113,8 +121,12 @@ export function formatThoughtDate(
   const format = formatters(locale);
   const days = Math.round((startOfDay(now) - startOfDay(date)) / 86_400_000);
 
-  if (days === 0) return `Today · ${format.time.format(date)}`;
-  if (days === 1) return `Yesterday · ${format.time.format(date)}`;
+  if (days === 0) {
+    return `Today · ${format.time.format(date)}`;
+  }
+  if (days === 1) {
+    return `Yesterday · ${format.time.format(date)}`;
+  }
   if (date.getFullYear() === now.getFullYear()) {
     return format.shortDate.format(date);
   }
