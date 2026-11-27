@@ -30,7 +30,7 @@ export function loadSherpa(): SherpaModule {
 export function recognizerConfig(modelsDir: string, threads: number): unknown {
   const modelDir = `${modelsDir.replace(/\/$/, "")}/parakeet-tdt-0.6b-v3`;
   return {
-    featConfig: { sampleRate: 16000, featureDim: 80 },
+    featConfig: { sampleRate: 16_000, featureDim: 80 },
     modelConfig: {
       transducer: {
         encoder: `${modelDir}/encoder.int8.onnx`,

@@ -27,7 +27,7 @@
   let analyser = $state.raw<AnalyserNode | null>(null);
 
   const tooLong = $derived(text.length > MAX_ENTRY_LENGTH);
-  const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1_000);
+  const nearLimit = $derived(text.length > MAX_ENTRY_LENGTH - 1000);
   const canSubmit = $derived(
     text.trim().length > 0 && !tooLong && !entries.submitting
   );
@@ -61,7 +61,7 @@
       elapsed = 0;
       timer = setInterval(() => {
         elapsed += 1;
-      }, 1_000);
+      }, 1000);
     } catch {
       entries.submitError = "Microphone access denied.";
     }
