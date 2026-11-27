@@ -115,6 +115,28 @@ Memento's visual language, motion/continuity contract, and phone rules are codif
 State color tokens (`--info`, `--success`, `--warning`) live in `apps/web/src/app.css`.
 A migration of existing screens to these standards is tracked separately.
 
+### Thoughts expand transition
+
+**Ownership.** `apps/web/src/lib/thoughts-transition.ts` owns the geometry (card target,
+push distances, push direction); `thought-overlay.svelte.ts` owns which thought is open
+and how far the list has been pushed; `thought-row.svelte` owns the DOM animation;
+`thoughts/+layout.svelte` keeps the list mounted and drives the route.
+
+**Invariants.**
+
+- The expanded card is the tapped row itself, never a copy.
+- The rows above and below travel exactly the card's edge deltas
+  (`pushDistances`), so no gap opens above or below the card.
+- The card always targets the space below the fixed 56px top bar, never the whole
+  viewport.
+- Close is the open in reverse: same 380ms/easing, same title and detail fades,
+  returning to the saved rect.
+- `prefers-reduced-motion` disables the card, title, detail and sibling movement.
+
+**Why an expandable card and not the View Transitions API.** The API snapshots pages and
+needs unique `view-transition-name`s; it cannot model "the row grows and pushes the list
+aside". Keeping the list mounted and moving the row is what makes the continuity read.
+
 ## Auth slot
 
 `apps/api/src/middleware/auth.ts` is a single middleware that validates the shared token

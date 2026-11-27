@@ -35,9 +35,8 @@ in both themes; keep 4.5:1 contrast for text.
 :root {
   --m-dur-fast: 150ms;
   --m-dur-base: 250ms;
-  --m-dur-slow: 300ms; /* morph */
+  --m-dur-expand: 380ms; /* expandable card, both ways */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --spring-lite: cubic-bezier(0.22, 1.05, 0.36, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 ```
@@ -45,120 +44,159 @@ in both themes; keep 4.5:1 contrast for text.
 Under `prefers-reduced-motion: reduce`, set durations to 0/1ms and keep only short
 opacity fades.
 
-## Shared-element transition pattern (title morph list → detail)
+## Expandable card pattern (list row → fullscreen detail)
 
-```svelte
-<!-- list row -->
-<span
-  class="t"
-  style:--vt={entry.id}
-  style:view-transition-name={selected === entry.id ? "row-title" : undefined}
->
-  {title}
-</span>
-
-<!-- detail -->
-<h1 style:view-transition-name="row-title">{title}</h1>
-```
+Keep the list mounted (a SvelteKit `+layout.svelte` under the list route), render the
+expanded card as a `position: fixed` overlay, and look up the source row by a stable
+data attribute (`data-thought-id`) to get its rect.
 
 ```ts
-// in +layout.svelte or a navigation helper
-import { onNavigate } from "$app/navigation";
+// 1. measure the tapped row (viewport coords)
+const source = document.querySelector<HTMLElement>(
+  `[data-thought-id="${entry.id}"]`
+);
+const r = source!.getBoundingClientRect();
+el.style.top = `${r.top}px`;
+el.style.left = `${r.left}px`;
+el.style.width = `${r.width}px`;
+el.style.height = `${r.height}px`;
 
-onNavigate((navigation) => {
-  if (!document.startViewTransition) return;
-  return new Promise((resolve) => {
-    document.startViewTransition(async () => {
-      resolve();
-      await navigation.complete;
-    });
-  });
-});
+// 2. next frame, grow to the stage (below the fixed 56px top bar)
+el.style.top = "56px";
+el.style.left = "0px";
+el.style.width = `${window.innerWidth}px`;
+el.style.height = `${window.innerHeight - 56}px`;
+
+// 3. fade the new detail content in after the grow
+setTimeout(() => (showDetail = true), 240);
 ```
 
 ```css
-::view-transition-group(row-title) {
-  animation-duration: var(--m-dur-slow);
-  animation-timing-function: var(--spring-lite);
+.expanded-card {
+  position: fixed;
+  z-index: 50;
+  overflow-y: auto;
+  background: var(--background); /* opaque; no shadow at rest */
+  transition:
+    top var(--m-dur-expand) var(--ease-out),
+    left var(--m-dur-expand) var(--ease-out),
+    width var(--m-dur-expand) var(--ease-out),
+    height var(--m-dur-expand) var(--ease-out);
 }
-::view-transition-old(row-title) {
-  animation: 200ms ease-out both fade-out;
+.expanded-card .title {
+  font-size: 1.06rem; /* row size at start */
+  transition: font-size var(--m-dur-expand) var(--ease-out);
 }
-::view-transition-new(row-title) {
-  animation: 200ms ease-in both fade-in;
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
+.expanded-card[data-phase="open"] .title {
+  font-size: 2.25rem; /* detail size */
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(row-title) {
-    animation-duration: 1ms;
-  }
-  ::view-transition-old(row-title),
-  ::view-transition-new(row-title) {
-    animation-duration: 120ms;
+  .expanded-card,
+  .expanded-card .title {
+    transition: none;
   }
 }
 ```
 
-Cleanup the temporary `view-transition-name` in `transition.finished.finally(...)`.
-Restore scroll position inside the update callback before the after-snapshot.
-Shift focus to the new heading after the transition resolves.
+Close is the same animation in reverse and starts on the same frame: set the title back
+to list size, reset the push distances to 0 (so siblings return as the card shrinks),
+fade the detail out, and shrink to the saved rect. Clear inline `top/left/width/height`
+after shrinking so the row resizes correctly when it returns to the list.
 
-## Scroll-aware title (list pages)
+Why not the View Transitions API: it snapshots pages and needs unique
+`view-transition-name`s; it does not model "the card grows and pushes its neighbours
+aside". The in-place card does, and keeps the list's scroll position intact.
+
+## Top bar with a state-driven back arrow
+
+The list header is a sticky 56px bar with no divider line. At rest the title is large.
+On scroll it shrinks; when a card opens it is small by state and a 40px back target
+fades in to its left, with the glyph aligned to the row content's left edge. The title
+eases inward 1.25rem to make room. The bar is opaque with a short gradient strip below
+it so content scrolls under without a hard edge.
 
 ```svelte
-<h1 class:large={!scrolled} class:small={scrolled}>Thoughts</h1>
+<header class="thoughts-header" class:small class:back class:scrolled>
+  <div class="topbar-gradient" aria-hidden="true"></div>
+  <button class="back-arrow" aria-label="Back to thoughts">←</button>
+  <h1 class="title">Thoughts</h1>
+</header>
 ```
 
 ```css
-.title-wrap {
+.thoughts-header {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 40;
+  display: flex;
+  height: 3.5rem; /* fixed: the card target never moves */
+  align-items: center;
+  padding: 0;
+  background: var(--background);
 }
-.title-gradient {
+.topbar-gradient {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, var(--bg) 55%, transparent);
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  background: linear-gradient(to bottom, var(--background), transparent);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
   pointer-events: none;
 }
-.page-title {
-  transition: font-size var(--m-dur-base) var(--ease-out);
-  width: fit-content;
+.scrolled .topbar-gradient {
+  opacity: 1;
 }
-.page-title.large {
+.back-arrow {
+  position: absolute;
+  /* The header sits inside the main's 1rem padding, so pull the target back
+     to align the glyph with the row content. */
+  left: -0.9rem;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+  opacity: 0;
+  transform: translate(-0.35rem, -50%);
+  pointer-events: none;
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+.back .back-arrow {
+  opacity: 1;
+  transform: translate(0, -50%);
+  pointer-events: auto;
+}
+.title {
   font-size: 2.25rem;
+  width: fit-content;
+  transition:
+    font-size var(--m-dur-base) var(--ease-out),
+    margin-left var(--m-dur-base) var(--ease-out);
 }
-.page-title.small {
+.small .title {
   font-size: 1.125rem;
+}
+.back .title {
+  margin-left: 1.25rem;
 }
 ```
 
-Toggle the class on scroll past ~40px. Keep the title in flow (no fixed bar).
-
 ## Examples: Memento screens
 
-- **Thoughts list → thought detail:** row title morphs to detail h1; scroll position
-  restored on back; text cross-fades at natural size.
+- **Thoughts list → thought detail:** the tapped row grows to fullscreen, rows above and
+  below move aside by the card's edge travel and fade out on the same timeline (no gap), the row title grows to the
+  detail title size, detail content fades in across the grow; close reverses it and
+  returns to the original row.
 - **Bottom nav:** already raised pill with tone step; keep as the reference for
   "controls stand up".
 - **Capture form:** input pressed-in in light theme; submit button raised.
@@ -166,7 +204,7 @@ Toggle the class on scroll past ~40px. Keep the title in flow (no fixed bar).
 
 ## Compatibility
 
-- SvelteKit navigation: `onNavigate` (built-in) or `sveltekit-view-transition`.
+- SvelteKit: keep the list in a `+layout.svelte` so it stays mounted under the detail
+  route; the detail route only sets the active id.
 - Component primitives: shadcn-svelte (do not replace).
 - Tokens: Tailwind v4 `@theme inline` in `app.css`.
-  EOF
