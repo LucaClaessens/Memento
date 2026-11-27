@@ -44,6 +44,7 @@
       const source = audioContext.createMediaStreamSource(stream);
       analyser = audioContext.createAnalyser();
       analyser.fftSize = 64;
+      analyser.smoothingTimeConstant = 0.2;
       source.connect(analyser);
       dataArray = new Uint8Array(analyser.frequencyBinCount);
 
@@ -64,7 +65,7 @@
             return dataArray![idx] / 255;
           });
         }
-      }, 100);
+      }, 50);
     } catch {
       entries.submitError = "Microphone access denied.";
     }
